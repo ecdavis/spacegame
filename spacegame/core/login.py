@@ -1,7 +1,6 @@
 import logging
 from pantsmud.driver import command, message, parser
-import spacegame.game
-from spacegame.game import command_manager, user
+from spacegame.core import command_manager, game, user
 from spacegame.universe import mobile
 
 
@@ -49,7 +48,7 @@ def login_command(brain, cmd, args):
     brain.message("login.success")
     brain.replace_input_handler(command_manager.command_input_handler, "game")
     p.attach_brain(brain)
-    spacegame.game.get_universe().add_mobile(p)
+    game.get_universe().add_mobile(p)
 
 
 def quit_command(brain, cmd, args):

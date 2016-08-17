@@ -1,5 +1,5 @@
 from pantsmud.driver import hook, parser
-from spacegame.game import command_manager
+from spacegame.core import command_manager
 
 
 def echo_command(mobile, _, args):

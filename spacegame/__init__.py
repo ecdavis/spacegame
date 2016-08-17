@@ -1,4 +1,4 @@
-import spacegame.game
+import spacegame.core
 
 def init():
-    spacegame.game.init()
+    spacegame.core.init()

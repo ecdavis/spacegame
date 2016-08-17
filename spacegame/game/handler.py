@@ -1,11 +1,12 @@
 import logging
 from pantsmud.driver import hook
-from spacegame import game, login
+import spacegame.game
+from spacegame.game import login
 
 
 def open_brain_hook(_, brain):
     logging.debug("brain %r opened" % brain)
-    game.get_universe().add_brain(brain)
+    spacegame.game.get_universe().add_brain(brain)
     brain.push_input_handler(login.login_input_handler, "login")
 
 
@@ -14,8 +15,8 @@ def close_brain_hook(_, brain):
     if brain.mobile:
         mobile = brain.mobile
         mobile.detach_brain()
-        game.get_universe().remove_mobile(mobile)
-    game.get_universe().remove_brain(brain)
+        spacegame.game.get_universe().remove_mobile(mobile)
+    spacegame.game.get_universe().remove_brain(brain)
 
 
 def init():

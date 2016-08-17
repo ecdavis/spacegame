@@ -1,5 +1,5 @@
 from pantsmud.driver import game
-from spacegame.game import echo
+from spacegame.game import echo, handler, login
 
 
 def get_universe():
@@ -8,3 +8,5 @@ def get_universe():
 
 def init():
     echo.init()
+    handler.init()
+    login.init()

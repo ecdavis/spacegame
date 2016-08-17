@@ -1,6 +1,4 @@
-from spacegame import game, handler, login
+import spacegame.game
 
 def init():
-    game.init()
-    handler.init()
-    login.init()
+    spacegame.game.init()

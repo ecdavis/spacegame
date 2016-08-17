@@ -11,6 +11,10 @@ def open_brain_hook(_, brain):
 
 def close_brain_hook(_, brain):
     logging.debug("brain %r closed" % brain)
+    if brain.mobile:
+        mobile = brain.mobile
+        mobile.detach_brain()
+        game.get_universe().remove_mobile(mobile)
     game.get_universe().remove_brain(brain)
 
 

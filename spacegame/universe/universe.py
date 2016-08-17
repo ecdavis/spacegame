@@ -11,6 +11,7 @@ class Universe(object):
     def __init__(self):
         self.sessions = set()
         self.brains = {}
+        self.mobiles = {}
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_WORLD)
 
     def load_data(self, data):
@@ -47,7 +48,21 @@ class Universe(object):
         Remove a Brain from the Universe.
         """
         del self.brains[brain.uuid]
-        brain.world = None
+        brain.universe = None
+
+    def add_mobile(self, mobile):
+        """
+        Add a Mobile to the Universe.
+        """
+        mobile.universe = self
+        self.mobiles[mobile.uuid] = mobile
+
+    def remove_mobile(self, mobile):
+        """
+        Remove a Mobile from the Universe.
+        """
+        del self.mobiles[mobile.uuid]
+        mobile.world = None
 
     def pulse(self):
         pass

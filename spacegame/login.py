@@ -1,13 +1,19 @@
 import logging
 from pantsmud.driver import command, message, parser
-from spacegame import user
+from spacegame import game, user
 from spacegame.game import command_manager
+from spacegame.universe import mobile
 
 
 class LoginCommandManager(command.CommandManager):
     def input_handler(self, brain, line):
         if not brain.is_user:
             logging.error("Brain '%s' has login input handler but it is not a user.", str(brain.uuid))
+            message.command_internal_error(brain)
+            return
+        if brain.mobile:
+            logging.error("Brain '%s' has login input handler it already has a player '%s'.",
+                          str(brain.uuid), str(brain.mobile.uuid))
             message.command_internal_error(brain)
             return
         return command.CommandManager.input_handler(self, brain, line)
@@ -20,7 +26,10 @@ login_input_handler = _login_command_handler.input_handler
 def register_command(brain, cmd, args):
     parser.parse([], args)
     u = user.User()
+    p = mobile.Mobile()
+    u.player_uuid = p.uuid
     user.save_user(u)
+    user.save_player(p)
     brain.message("register.success", {"uuid": str(u.uuid)})
 
 
@@ -32,8 +41,15 @@ def login_command(brain, cmd, args):
         brain.message("login.fail")
         return
     u = user.load_user(user_uuid)
+    if not u.player_uuid or not user.player_exists(u.player_uuid):
+        logging.debug("login failed due to non-existent player")
+        brain.message("login.fail")
+        return
+    p = user.load_player(u.player_uuid)
     brain.message("login.success")
     brain.replace_input_handler(command_manager.command_input_handler, "game")
+    p.attach_brain(brain)
+    game.get_universe().add_mobile(p)
 
 
 def quit_command(brain, cmd, args):

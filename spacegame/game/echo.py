@@ -2,16 +2,16 @@ from pantsmud.driver import hook, parser
 from spacegame.game import command_manager
 
 
-def echo_command(brain, _, args):
-    brain.message("echo", {"line": args})
+def echo_command(mobile, _, args):
+    mobile.message("echo", {"line": args})
 
 
-def quit_command(brain, _, args):
+def quit_command(mobile, _, args):
     parser.parse([], args)
-    brain.close()
+    mobile.brain.close()
 
 
-def shutdown_command(brain, _, args):
+def shutdown_command(mobile, _, args):
     parser.parse([], args)
     hook.run(hook.HOOK_SHUTDOWN)
 

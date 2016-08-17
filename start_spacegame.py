@@ -17,9 +17,9 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.DEBUG)
 
     # Initialize the game.
+    spacegame.init()
     engine = pants.Engine.instance()
     universe = persist.load_universe(UNIVERSE_FILE)
     game.init(engine, universe)
-    spacegame.init()
     net.init()
     game.start()

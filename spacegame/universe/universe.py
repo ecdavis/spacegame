@@ -62,7 +62,7 @@ class Universe(object):
         Remove a Mobile from the Universe.
         """
         del self.mobiles[mobile.uuid]
-        mobile.world = None
+        mobile.universe = None
 
     def pulse(self):
         pass

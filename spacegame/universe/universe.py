@@ -105,6 +105,9 @@ class Universe(object):
         self.star_systems[star_system.uuid] = star_system
 
     def get_celestial(self, celestial_name, star_system=None):
+        """
+        Get a Celestial by name, optionally filter by StarSystem.
+        """
         for celestial in self.celestials.itervalues():
             if star_system and celestial.star_system is not star_system:
                 continue

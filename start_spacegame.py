@@ -63,7 +63,7 @@ if __name__ == '__main__':
     if __debug__:
         logging.basicConfig(level=logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.INFO)
 
     # Initialize the game.
     check_and_create_directories()

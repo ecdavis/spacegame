@@ -13,6 +13,7 @@ class Universe(object):
         self.brains = {}
         self.mobiles = {}
         self.star_systems = {}
+        self.celestials = {}
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_WORLD)
 
     def load_data(self, data):
@@ -89,6 +90,13 @@ class Universe(object):
         """
         star_system.universe = self
         self.star_systems[star_system.uuid] = star_system
+
+    def add_celestial(self, celestial):
+        """
+        Add a Celestial to the Universe.
+        """
+        celestial.universe = self
+        self.celestials[celestial.uuid] = celestial
 
     def pulse(self):
         """

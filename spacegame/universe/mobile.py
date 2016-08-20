@@ -90,7 +90,7 @@ class Mobile(object):
 
     @property
     def star_system(self):
-        """\
+        """
         Get the Mobile's StarSystem, if it has one.
         """
         if self.star_system_uuid:

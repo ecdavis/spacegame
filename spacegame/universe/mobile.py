@@ -11,6 +11,7 @@ class Mobile(object):
         self.name = ""
         self.universe = None
         self.brain_uuid = None
+        self.solar_system_uuid = None
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_MOBILE)
 
     def load_data(self, data):
@@ -23,11 +24,14 @@ class Mobile(object):
         Data layout:
             {
                 "uuid": "<uuid>",
+                "name": "<word>",
+                "solar_system_uuid": "<uuid>",
                 "auxiliary": <dict>  # This will be passed to pantsmud.auxiliary.load_data
             }
         """
         self.uuid = uuid.UUID(data["uuid"])
         self.name = data["name"]
+        self.solar_system_uuid = uuid.UUID(data["solar_system_uuid"])  # TODO This isn't safe if the SolarSystem no longer exists.
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
     def save_data(self):
@@ -37,6 +41,7 @@ class Mobile(object):
         return {
             "uuid": str(self.uuid),
             "name": self.name,
+            "solar_system_uuid": str(self.solar_system_uuid),
             "auxiliary": auxiliary.save_data(self.aux)
         }
 
@@ -82,6 +87,26 @@ class Mobile(object):
         """
         self.brain.mobile = None
         self.brain = None
+
+    @property
+    def solar_system(self):
+        """\
+        Get the Mobile's SolarSystem, if it has one.
+        """
+        if self.solar_system_uuid:
+            return self.universe.solar_systems[self.solar_system_uuid]
+        else:
+            return self.solar_system_uuid
+
+    @solar_system.setter
+    def solar_system(self, solar_system):
+        """
+        Set the Mobile's SolarSystem.
+        """
+        if solar_system:
+            self.solar_system_uuid = solar_system.uuid
+        else:
+            self.solar_system_uuid = None
 
     def message(self, name, data=None):
         """

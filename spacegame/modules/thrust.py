@@ -21,14 +21,14 @@ def thrust_vector_command(mobile, _, args):
     x = round(params["x"], 3)
     y = round(params["y"], 3)
     z = round(params["z"], 3)
-    direction_vector = (x, y, z)
+    vector = (x, y, z)
     if x > 1.0 or y > 1.0 or z > 1.0:
         mobile.message("thrust.vector.fail")
         return
     if abs(1.0 - sum((abs(x), abs(y), abs(z)))) > 0.001:
         mobile.message("thrust.vector.fail")
         return
-    mobile.direction = direction_vector
+    mobile.vector = vector
     mobile.message("thrust.vector.success")
 
 

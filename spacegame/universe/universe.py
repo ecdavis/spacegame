@@ -12,6 +12,7 @@ class Universe(object):
         self.sessions = set()
         self.brains = {}
         self.mobiles = {}
+        self.solar_systems = {}
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_WORLD)
 
     def load_data(self, data):
@@ -52,9 +53,9 @@ class Universe(object):
 
     def get_mobile(self, mobile_name):
         """
-
+        Get a Mobile by name.
         """
-        for _, mobile in self.mobiles.iteritems():
+        for mobile in self.mobiles.itervalues():
             if mobile.name == mobile_name:
                 return mobile
         return None
@@ -73,8 +74,32 @@ class Universe(object):
         del self.mobiles[mobile.uuid]
         mobile.universe = None
 
+    def get_solar_system(self, solar_system_name):
+        """
+        Get a SolarSystem by name.
+        """
+        for solar_system in self.solar_systems.itervalues():
+            if solar_system.name == solar_system_name:
+                return solar_system
+        return None
+
+    def add_solar_system(self, solar_system):
+        """
+        Add a SolarSystem to the Universe.
+        """
+        solar_system.universe = self
+        self.solar_systems[solar_system.uuid] = solar_system
+
     def pulse(self):
-        pass
+        """
+        Pulse all SolarSystems contained by the Universe.
+        """
+        for _, solar_system in self.solar_systems.iteritems():
+            solar_system.pulse()
 
     def force_reset(self):
-        pass
+        """
+        Force all SolarSystems contained by the Universe to reset.
+        """
+        for _, solar_system in self.solar_systems.iteritems():
+            solar_system.force_reset()

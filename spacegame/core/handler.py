@@ -1,12 +1,12 @@
 import logging
 from pantsmud.driver import hook
-from spacegame.core import game, login
+from spacegame.core import game, login_manager
 
 
 def open_brain_hook(_, brain):
     logging.debug("brain %r opened" % brain)
     game.get_universe().add_brain(brain)
-    brain.push_input_handler(login.login_input_handler, "login")
+    brain.push_input_handler(login_manager.login_input_handler, "login")
 
 
 def close_brain_hook(_, brain):

@@ -8,6 +8,7 @@ class Mobile(object):
     """
     def __init__(self):
         self.uuid = uuid.uuid4()
+        self.name = ""
         self.universe = None
         self.brain_uuid = None
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_MOBILE)
@@ -26,6 +27,7 @@ class Mobile(object):
             }
         """
         self.uuid = uuid.UUID(data["uuid"])
+        self.name = data["name"]
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
     def save_data(self):
@@ -34,6 +36,7 @@ class Mobile(object):
         """
         return {
             "uuid": str(self.uuid),
+            "name": self.name,
             "auxiliary": auxiliary.save_data(self.aux)
         }
 

@@ -1,3 +1,4 @@
+import os
 import os.path
 import uuid
 from pantsmud.driver import storage, util
@@ -5,7 +6,8 @@ from spacegame.universe import mobile
 
 
 USER_FILE_PATH = "data/users/%s.user.json"
-PLAYER_FILE_PATH = "data/players/%s.mobile.json"
+PLAYER_DIR_PATH = "data/players/"
+PLAYER_FILE_PATH = PLAYER_DIR_PATH + "%s.mobile.json"
 
 
 class User(object):
@@ -37,6 +39,14 @@ def load_user(user_uuid):
 
 def save_user(user):
     storage.save_object(USER_FILE_PATH % util.uuid_to_base32(user.uuid), user)
+
+
+def player_name_exists(player_name):
+    for filename in os.listdir(PLAYER_DIR_PATH):
+        p = storage.load_file(os.path.join(PLAYER_DIR_PATH, filename), mobile.Mobile)
+        if p.name == player_name:
+            return True
+    return False
 
 
 def player_exists(player_uuid):

@@ -50,6 +50,15 @@ class Universe(object):
         del self.brains[brain.uuid]
         brain.universe = None
 
+    def get_mobile(self, mobile_name):
+        """
+
+        """
+        for _, mobile in self.mobiles.iteritems():
+            if mobile.name == mobile_name:
+                return mobile
+        return None
+
     def add_mobile(self, mobile):
         """
         Add a Mobile to the Universe.

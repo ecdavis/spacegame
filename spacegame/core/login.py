@@ -23,13 +23,17 @@ login_input_handler = _login_command_handler.input_handler
 
 
 def register_command(brain, cmd, args):
-    parser.parse([], args)
+    params = parser.parse([("name", parser.WORD)], args)
+    if user.player_name_exists(params["name"]):
+        brain.message("register.fail")
+        return
     u = user.User()
     p = mobile.Mobile()
+    p.name = params["name"]
     u.player_uuid = p.uuid
     user.save_user(u)
     user.save_player(p)
-    brain.message("register.success", {"uuid": str(u.uuid)})
+    brain.message("register.success", {"name": p.name, "uuid": str(u.uuid)})
 
 
 def login_command(brain, cmd, args):
@@ -45,7 +49,7 @@ def login_command(brain, cmd, args):
         brain.message("login.fail")
         return
     p = user.load_player(u.player_uuid)
-    brain.message("login.success")
+    brain.message("login.success", {"name": p.name})
     brain.replace_input_handler(command_manager.command_input_handler, "game")
     p.attach_brain(brain)
     game.get_universe().add_mobile(p)

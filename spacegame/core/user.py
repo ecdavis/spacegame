@@ -5,7 +5,8 @@ from pantsmud.driver import storage, util
 from spacegame.universe import mobile
 
 
-USER_FILE_PATH = "data/users/%s.user.json"
+USER_DIR_PATH = "data/users/"
+USER_FILE_PATH = USER_DIR_PATH + "%s.user.json"
 PLAYER_DIR_PATH = "data/players/"
 PLAYER_FILE_PATH = PLAYER_DIR_PATH + "%s.mobile.json"
 

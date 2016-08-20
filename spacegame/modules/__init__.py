@@ -1,8 +1,9 @@
-from spacegame.modules import chat, jump, login, thrust, warp
+from spacegame.modules import chat, info, jump, login, thrust, warp
 
 
 def init():
     chat.init()
+    info.init()
     jump.init()
     login.init()
     thrust.init()

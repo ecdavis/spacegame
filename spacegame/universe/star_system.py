@@ -2,7 +2,7 @@ import uuid
 from pantsmud.driver import hook, auxiliary
 
 
-class SolarSystem(object):
+class StarSystem(object):
     """
     A location within the game universe.
     """
@@ -16,7 +16,7 @@ class SolarSystem(object):
 
     def load_data(self, data):
         """
-        Loads a dictionary containing saved SolarSystem data onto the object.
+        Loads a dictionary containing saved StarSystem data onto the object.
 
         This method expects well-formed data. It will validate all fields and raise an exception if any of the data is
         invalid.
@@ -35,7 +35,7 @@ class SolarSystem(object):
 
     def save_data(self):
         """
-        Returns a dictionary containing SolarSystem data ready to be serialized.
+        Returns a dictionary containing StarSystem data ready to be serialized.
         """
         return {
             "uuid": str(self.uuid),
@@ -47,18 +47,18 @@ class SolarSystem(object):
     @property
     def reset_interval(self):
         """
-        Get the SolarSystem's reset interval in minutes.
+        Get the StarSystem's reset interval in minutes.
 
-        A negative interval indicates that the SolarSystem will never be reset.
+        A negative interval indicates that the StarSystem will never be reset.
         """
         return self._reset_interval
 
     @reset_interval.setter
     def reset_interval(self, interval):
         """
-        Set the SolarSystem's reset interval in minutes.
+        Set the StarSystem's reset interval in minutes.
 
-        If the SolarSystem was previously set to never reset, it will now begin to reset as expected. If the current
+        If the StarSystem was previously set to never reset, it will now begin to reset as expected. If the current
         reset timer is greater than the new interval, it will be set to the new interval.
         """
         if self.reset_interval < 0 or self.reset_timer > interval:
@@ -67,9 +67,9 @@ class SolarSystem(object):
 
     def pulse(self):
         """
-        Pulse the SolarSystem, i.e. decrement its reset timer.
+        Pulse the StarSystem, i.e. decrement its reset timer.
 
-        When the reset timer reaches zero, the SolarSystem will be reset and the reset timer will be set back to the
+        When the reset timer reaches zero, the StarSystem will be reset and the reset timer will be set back to the
         reset interval value.
         """
         self.reset_timer -= 1
@@ -79,7 +79,7 @@ class SolarSystem(object):
 
     def force_reset(self):
         """
-        Force the SolarSystem to reset, regardless of the current reset timer value.
+        Force the StarSystem to reset, regardless of the current reset timer value.
         """
         self.reset_timer = 1
         self.pulse()

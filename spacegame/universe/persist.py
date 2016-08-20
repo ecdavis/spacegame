@@ -1,5 +1,5 @@
 from pantsmud.driver import storage
-from spacegame.universe import solar_system, universe
+from spacegame.universe import star_system, universe
 
 
 def load_universe(path):
@@ -16,15 +16,15 @@ def save_universe(path, universe):
     return storage.save_object(path, universe)
 
 
-def load_solar_systems(path):
+def load_star_systems(path):
     """
-    Load all SolarSystem data stored under the given path. This function is not recursive.
+    Load all StarSystem data stored under the given path. This function is not recursive.
     """
-    return storage.load_files(path, "*.solar_system.json", solar_system.SolarSystem)
+    return storage.load_files(path, "*.star_system.json", star_system.StarSystem)
 
 
-def save_solar_systems(path, universe):
+def save_star_systems(path, universe):
     """
-    Save all SolarSystem data to files under the given path.
+    Save all StarSystem data to files under the given path.
     """
-    return storage.save_objects(path, ".solar_system.json", universe.solar_systems.values())
+    return storage.save_objects(path, ".star_system.json", universe.star_systems.values())

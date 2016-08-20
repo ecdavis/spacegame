@@ -8,18 +8,18 @@ from spacegame.universe import persist
 
 UNIVERSE_PATH = os.path.abspath("data/universe/")
 UNIVERSE_FILE = os.path.join(UNIVERSE_PATH, "universe.json")
-SOLAR_SYSTEM_PATH = os.path.join(UNIVERSE_PATH, "solar_systems")
+STAR_SYSTEM_PATH = os.path.join(UNIVERSE_PATH, "star_systems")
 
 
 def load_universe():
     u = persist.load_universe(UNIVERSE_FILE)
-    for s in persist.load_solar_systems(SOLAR_SYSTEM_PATH):
-        u.add_solar_system(s)
+    for s in persist.load_star_systems(STAR_SYSTEM_PATH):
+        u.add_star_system(s)
     return u
 
 
 def save_universe(u):
-    persist.save_solar_systems(SOLAR_SYSTEM_PATH, u)
+    persist.save_star_systems(STAR_SYSTEM_PATH, u)
     persist.save_universe(UNIVERSE_FILE, u)
 
 

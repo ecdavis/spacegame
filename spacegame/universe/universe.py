@@ -12,7 +12,7 @@ class Universe(object):
         self.sessions = set()
         self.brains = {}
         self.mobiles = {}
-        self.solar_systems = {}
+        self.star_systems = {}
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_WORLD)
 
     def load_data(self, data):
@@ -74,32 +74,32 @@ class Universe(object):
         del self.mobiles[mobile.uuid]
         mobile.universe = None
 
-    def get_solar_system(self, solar_system_name):
+    def get_star_system(self, star_system_name):
         """
-        Get a SolarSystem by name.
+        Get a StarSystem by name.
         """
-        for solar_system in self.solar_systems.itervalues():
-            if solar_system.name == solar_system_name:
-                return solar_system
+        for star_system in self.star_systems.itervalues():
+            if star_system.name == star_system_name:
+                return star_system
         return None
 
-    def add_solar_system(self, solar_system):
+    def add_star_system(self, star_system):
         """
-        Add a SolarSystem to the Universe.
+        Add a StarSystem to the Universe.
         """
-        solar_system.universe = self
-        self.solar_systems[solar_system.uuid] = solar_system
+        star_system.universe = self
+        self.star_systems[star_system.uuid] = star_system
 
     def pulse(self):
         """
-        Pulse all SolarSystems contained by the Universe.
+        Pulse all StarSystems contained by the Universe.
         """
-        for _, solar_system in self.solar_systems.iteritems():
-            solar_system.pulse()
+        for _, star_system in self.star_systems.iteritems():
+            star_system.pulse()
 
     def force_reset(self):
         """
-        Force all SolarSystems contained by the Universe to reset.
+        Force all StarSystems contained by the Universe to reset.
         """
-        for _, solar_system in self.solar_systems.iteritems():
-            solar_system.force_reset()
+        for _, star_system in self.star_systems.iteritems():
+            star_system.force_reset()

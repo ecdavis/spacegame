@@ -39,5 +39,6 @@ if __name__ == '__main__':
     universe = load_universe()
     game.init(engine, universe)
     net.init()
+    spacegame.start()
     game.start()
     save_universe(universe)

@@ -12,6 +12,9 @@ class Mobile(object):
         self.universe = None
         self.brain_uuid = None
         self.celestial_uuid = None
+        self.position = (0, 0, 0)
+        self.vector = (1.0, 0.0, 0.0)
+        self.speed = 0
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_MOBILE)
 
     def load_data(self, data):
@@ -119,6 +122,14 @@ class Mobile(object):
             return self.celestial.star_system
         else:
             return None
+
+    def velocity(self):
+        """
+        Get the Mobile's current velocity.
+        """
+        return (round(self.vector[0]*self.speed, 3),  # X
+                round(self.vector[1]*self.speed, 3),  # Y
+                round(self.vector[2]*self.speed, 3))  # Z
 
     def message(self, name, data=None):
         """

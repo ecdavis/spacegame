@@ -9,6 +9,7 @@ class Celestial(object):
     def __init__(self):
         self.uuid = uuid.uuid4()
         self.universe = None
+        self.name = ""
         self.star_system_uuid = None
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_NODE)
 
@@ -22,11 +23,13 @@ class Celestial(object):
         Data layout:
             {
                 "uuid": "<uuid>",
+                "name": "<string>",
                 "star_system_uuid": "<uuid>",
                 "auxiliary": <dict>  # This will be passed to pantsmud.auxiliary.load_data
             }
         """
         self.uuid = uuid.UUID(data["uuid"])
+        self.name = data["name"]
         self.star_system_uuid = uuid.UUID(data["star_system_uuid"])
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
@@ -36,6 +39,7 @@ class Celestial(object):
         """
         return {
             "uuid": str(self.uuid),
+            "name": self.name,
             "star_system_uuid": str(self.star_system_uuid),
             "auxiliary": auxiliary.save_data(self.aux)
         }
@@ -46,7 +50,7 @@ class Celestial(object):
         Get the Celestial's StarSystem, if it has one.
         """
         if self.star_system_uuid:
-            return self.universe.star_system[self.star_system_uuid]
+            return self.universe.star_systems[self.star_system_uuid]
         else:
             return self.star_system_uuid
 

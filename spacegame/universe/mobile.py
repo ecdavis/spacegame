@@ -11,7 +11,7 @@ class Mobile(object):
         self.name = ""
         self.universe = None
         self.brain_uuid = None
-        self.star_system_uuid = None
+        self.celestial_uuid = None
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_MOBILE)
 
     def load_data(self, data):
@@ -25,13 +25,13 @@ class Mobile(object):
             {
                 "uuid": "<uuid>",
                 "name": "<word>",
-                "star_system_uuid": "<uuid>",
+                "celestial_uuid": "<uuid>",
                 "auxiliary": <dict>  # This will be passed to pantsmud.auxiliary.load_data
             }
         """
         self.uuid = uuid.UUID(data["uuid"])
         self.name = data["name"]
-        self.star_system_uuid = uuid.UUID(data["star_system_uuid"])  # TODO This isn't safe if the StarSystem no longer exists.
+        self.celestial_uuid = uuid.UUID(data["celestial_uuid"])  # TODO This isn't safe if the Celestial no longer exists.
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
     def save_data(self):
@@ -41,7 +41,7 @@ class Mobile(object):
         return {
             "uuid": str(self.uuid),
             "name": self.name,
-            "star_system_uuid": str(self.star_system_uuid),
+            "celestial_uuid": str(self.celestial_uuid),
             "auxiliary": auxiliary.save_data(self.aux)
         }
 
@@ -89,24 +89,36 @@ class Mobile(object):
         self.brain = None
 
     @property
+    def celestial(self):
+        """
+        Get the Mobile's Celestial, if it has one.
+        """
+        if self.celestial_uuid:
+            return self.universe.celestials[self.celestial_uuid]
+        else:
+            return self.celestial_uuid
+
+    @celestial.setter
+    def celestial(self, celestial):
+        """
+        Set the Mobile's Celestial.
+        """
+        if celestial:
+            self.celestial_uuid = celestial.uuid
+        else:
+            self.celestial_uuid = None
+
+    @property
     def star_system(self):
         """
-        Get the Mobile's StarSystem, if it has one.
-        """
-        if self.star_system_uuid:
-            return self.universe.star_systems[self.star_system_uuid]
-        else:
-            return self.star_system_uuid
+        Get the Mobile's StarSystem.
 
-    @star_system.setter
-    def star_system(self, star_system):
+        This is the StarSystem of the Mobile's Celestial, if it has one.
         """
-        Set the Mobile's StarSystem.
-        """
-        if star_system:
-            self.star_system_uuid = star_system.uuid
+        if self.celestial:
+            return self.celestial.star_system
         else:
-            self.star_system_uuid = None
+            return None
 
     def message(self, name, data=None):
         """

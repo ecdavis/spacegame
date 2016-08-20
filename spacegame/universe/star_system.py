@@ -10,6 +10,7 @@ class StarSystem(object):
         self.uuid = uuid.uuid4()
         self.universe = None
         self.name = ""
+        self.core_celestial_uuids = set()
         self._reset_interval = -1
         self.reset_timer = -1
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_ZONE)
@@ -30,6 +31,7 @@ class StarSystem(object):
         """
         self.uuid = uuid.UUID(data["uuid"])
         self.name = data["name"]
+        self.core_celestial_uuids = set((uuid.UUID(s) for s in data["core_celestial_uuids"]))
         self.reset_interval = data["reset_interval"]
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
@@ -40,9 +42,19 @@ class StarSystem(object):
         return {
             "uuid": str(self.uuid),
             "name": self.name,
+            "core_celestial_uuids": list((str(u) for u in self.core_celestial_uuids)),
             "reset_interval": self.reset_interval,
             "auxiliary": auxiliary.save_data(self.aux)
         }
+
+    @property
+    def core_celestials(self):
+        """
+        Get the StarSystem's core Celestials.
+
+        When adding an entity to the StarSystem, it should be placed in one of these Celestials.
+        """
+        return set((self.universe.celestials[u] for u in self.core_celestial_uuids))
 
     @property
     def reset_interval(self):

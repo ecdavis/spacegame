@@ -1,3 +1,4 @@
+import uuid
 from pantsmud.driver import auxiliary
 
 
@@ -13,6 +14,8 @@ class Universe(object):
         self.brains = {}
         self.mobiles = {}
         self.star_systems = {}
+        self.celestials = {}
+        self.core_star_system_uuids = set()
         self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_WORLD)
 
     def load_data(self, data):
@@ -27,6 +30,7 @@ class Universe(object):
                 "auxiliary": <dict>  # This will be passed to pantsmud.auxiliary.load_data
             }
         """
+        self.core_star_system_uuids = set((uuid.UUID(s) for s in data["core_star_system_uuids"]))
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
     def save_data(self):
@@ -34,8 +38,18 @@ class Universe(object):
         Returns a dictionary containing Universe data ready to be serialized.
         """
         return {
+            "core_star_system_uuids": list((str(u) for u in self.core_star_system_uuids)),
             "auxiliary": auxiliary.save_data(self.aux)
         }
+
+    @property
+    def core_star_systems(self):
+        """
+        Get the Universe's core Star Systems.
+
+        When adding an entity to the Universe, it should be placed in one of these star systems.
+        """
+        return set((self.star_systems[u] for u in self.core_star_system_uuids))
 
     def add_brain(self, brain):
         """
@@ -89,6 +103,21 @@ class Universe(object):
         """
         star_system.universe = self
         self.star_systems[star_system.uuid] = star_system
+
+    def get_celestial(self, celestial_name, star_system=None):
+        for celestial in self.celestials.itervalues():
+            if star_system and celestial.star_system is not star_system:
+                continue
+            if celestial.name == celestial_name:
+                return celestial
+        return None
+
+    def add_celestial(self, celestial):
+        """
+        Add a Celestial to the Universe.
+        """
+        celestial.universe = self
+        self.celestials[celestial.uuid] = celestial
 
     def pulse(self):
         """

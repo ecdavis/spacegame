@@ -1,4 +1,5 @@
 from pantsmud.driver import parser
+import random
 from spacegame.core import command_manager, game
 
 
@@ -12,7 +13,7 @@ def jump_command(mobile, _, args):
     elif mobile.star_system is star_system:
         mobile.message("jump.fail")  # TODO Add error message.
         return
-    mobile.star_system = star_system
+    mobile.celestial = random.choice(list(star_system.core_celestials))
     mobile.message("jump.success")
 
 

@@ -7,3 +7,7 @@ def init():
     login.init()
     thrust.init()
     warp.init()
+
+
+def start():
+    thrust.start()

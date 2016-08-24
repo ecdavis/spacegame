@@ -1,22 +1,17 @@
-from pantsmud.driver import parser
+from pantsmud.driver import error, message, parser
 from spacegame.core import command_manager, game
 
 
-def warp_command(mobile, _, args):
+def warp_command(mobile, cmd, args):
     params = parser.parse([("celestial_name", parser.STRING)], args)
     universe = game.get_universe()
     celestial = universe.get_celestial(params["celestial_name"], mobile.star_system)
-    if not celestial:
-        mobile.message("warp.fail")  # TODO Add error message.
-        return
+    if not celestial or mobile.star_system is not celestial.star_system:
+        raise error.CommandFail()  # TODO Add error message.
     elif mobile.celestial is celestial:
-        mobile.message("warp.fail")  # TODO Add error message.
-        return
-    elif mobile.star_system is not celestial.star_system:
-        mobile.message("warp.fail")  # TODO Add error message.
-        return
+        raise error.CommandFail()  # TODO Add error message.
     mobile.celestial = celestial
-    mobile.message("warp.success")
+    message.command_success(mobile, cmd)
 
 
 def init():

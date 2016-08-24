@@ -1,20 +1,18 @@
-from pantsmud.driver import parser
+from pantsmud.driver import error, message, parser
 import random
 from spacegame.core import command_manager, game
 
 
-def jump_command(mobile, _, args):
+def jump_command(mobile, cmd, args):
     params = parser.parse([("system_name", parser.STRING)], args)
     universe = game.get_universe()
     star_system = universe.get_star_system(params["system_name"])
     if not star_system:
-        mobile.message("jump.fail")  # TODO Add error message.
-        return
+        raise error.CommandFail()  # TODO Add error message.
     elif mobile.star_system is star_system:
-        mobile.message("jump.fail")  # TODO Add error message.
-        return
+        raise error.CommandFail()  # TODO Add error message.
     mobile.celestial = random.choice(list(star_system.core_celestials))
-    mobile.message("jump.success")
+    message.command_success(mobile, cmd, None)
 
 
 def init():

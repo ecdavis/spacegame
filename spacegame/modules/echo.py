@@ -1,9 +1,9 @@
-from pantsmud.driver import hook, parser
+from pantsmud.driver import hook, message, parser
 from spacegame.core import command_manager, game, user
 
 
-def echo_command(mobile, _, args):
-    mobile.message("echo", {"line": args})
+def echo_command(mobile, cmd, args):
+    message.command_success(mobile, cmd, {"line": args})
 
 
 def quit_command(mobile, _, args):

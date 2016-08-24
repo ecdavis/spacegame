@@ -1,15 +1,15 @@
-from pantsmud.driver import parser
+from pantsmud.driver import message, parser
 from spacegame.core import command_manager
 
 
-def position_command(mobile, _, args):
-    params = parser.parse([], args)
-    mobile.message("position.success", {"position": mobile.position})
+def position_command(mobile, cmd, args):
+    parser.parse([], args)
+    message.command_success(mobile, cmd, {"position": mobile.position})
 
 
-def location_command(mobile, _, args):
-    params = parser.parse([], args)
-    mobile.message("location.success", {"celestial": mobile.celestial.name, "star_system": mobile.star_system.name})
+def location_command(mobile, cmd, args):
+    parser.parse([], args)
+    message.command_success(mobile, cmd, {"celestial": mobile.celestial.name, "star_system": mobile.star_system.name})
 
 
 def init():

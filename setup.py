@@ -11,7 +11,7 @@ setup(
     url="http://github.com/ecdavis/spacegame",
     download_url="https://github.com/ecdavis/spacegame/tarball/master",
     packages=["spacegame", "spacegame.core", "spacegame.modules", "spacegame.universe"],
-    install_requires=["pants >= 1.0", "pantsmud >= 0.1"],
+    install_requires=["pants >= 1.0", "pantsmud >= 0.2"],
     classifiers=[
         "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: Apache Software License",

@@ -1,5 +1,5 @@
 import socket
-from tests.integration.integration_util import IntegrationTestCase
+from tests.integration.util import IntegrationTestCase
 
 
 class PlaceholderIntegrationTestCase(IntegrationTestCase):

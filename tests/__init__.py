@@ -1,6 +1,6 @@
 import unittest
 from tests.integration.test_placeholder import PlaceholderIntegrationTestCase
-from tests.unit.placeholder import PlaceholderTestCase
+from tests.unit.test_placeholder import PlaceholderTestCase
 
 
 def get_all_tests():

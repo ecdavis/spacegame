@@ -29,20 +29,26 @@ class IntegrationTestCase(unittest.TestCase):
         time.sleep(1)  # TODO Figure out a way to remove this.
 
     def setUp(self):
-        self.socket = socket.socket()
-        self.socket.settimeout(1.0)
-        self.socket.connect(('127.0.0.1', self._port))
+        self.clients = []
 
     def tearDown(self):
-        self.socket.close()
+        for client in self.clients:
+            client.close()
 
-    def register_and_login(self, username):
-        self.socket.send("register %s\r\n" % username)
-        register_response = json.loads(self.socket.recv(4096))
+    def get_client(self):
+        client = socket.socket()
+        client.settimeout(1.0)
+        client.connect(('127.0.0.1', self._port))
+        self.clients.append(client)
+        return client
+
+    def register_and_login(self, client, username):
+        client.send("register %s\r\n" % username)
+        register_response = json.loads(client.recv(4096))
         self.assertEqual("command.success", register_response["message"])
         uuid = register_response["data"]["result"]["uuid"]
-        self.socket.send("login %s\r\n" % uuid)
-        login_response = json.loads(self.socket.recv(4096))
+        client.send("login %s\r\n" % uuid)
+        login_response = json.loads(client.recv(4096))
         self.assertEqual("command.success", login_response["message"])
 
     @classmethod

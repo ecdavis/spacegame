@@ -1,3 +1,4 @@
+import json
 import shutil
 import socket
 import tempfile
@@ -27,6 +28,15 @@ class IntegrationTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.socket.close()
+
+    def register_and_login(self, username):
+        self.socket.send("register %s\r\n" % username)
+        register_response = json.loads(self.socket.recv(4096))
+        self.assertEqual("command.success", register_response["message"])
+        uuid = register_response["data"]["result"]["uuid"]
+        self.socket.send("login %s\r\n" % uuid)
+        login_response = json.loads(self.socket.recv(4096))
+        self.assertEqual("command.success", login_response["message"])
 
     @classmethod
     def tearDownClass(cls):

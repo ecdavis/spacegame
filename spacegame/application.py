@@ -36,6 +36,10 @@ def check_and_create_universe():
     u.add_celestial(c1)
     c1.star_system = s1
     s1.core_celestial_uuids.add(c1.uuid)
+    c2 = celestial.Celestial()
+    c2.name = "Earth"
+    u.add_celestial(c2)
+    c2.star_system = s1
     u.core_star_system_uuids.add(s1.uuid)
     s2 = star_system.StarSystem()
     s2.name = "Alpha Centauri"

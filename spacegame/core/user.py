@@ -2,13 +2,8 @@ import os
 import os.path
 import uuid
 from pantsmud.driver import storage, util
+from spacegame import config
 from spacegame.universe import mobile
-
-
-USER_DIR_PATH = "data/users/"
-USER_FILE_PATH = USER_DIR_PATH + "%s.user.json"
-PLAYER_DIR_PATH = "data/players/"
-PLAYER_FILE_PATH = PLAYER_DIR_PATH + "%s.mobile.json"
 
 
 class User(object):
@@ -31,32 +26,32 @@ class User(object):
 
 
 def user_exists(user_uuid):
-    return os.path.exists(USER_FILE_PATH % util.uuid_to_base32(user_uuid))
+    return os.path.exists(config.USER_FILE_PATH % util.uuid_to_base32(user_uuid))
 
 
 def load_user(user_uuid):
-    return storage.load_file(USER_FILE_PATH % util.uuid_to_base32(user_uuid), User)
+    return storage.load_file(config.USER_FILE_PATH % util.uuid_to_base32(user_uuid), User)
 
 
 def save_user(user):
-    storage.save_object(USER_FILE_PATH % util.uuid_to_base32(user.uuid), user)
+    storage.save_object(config.USER_FILE_PATH % util.uuid_to_base32(user.uuid), user)
 
 
 def player_name_exists(player_name):
-    for filename in os.listdir(PLAYER_DIR_PATH):
-        p = storage.load_file(os.path.join(PLAYER_DIR_PATH, filename), mobile.Mobile)
+    for filename in os.listdir(config.PLAYER_DIR_PATH):
+        p = storage.load_file(os.path.join(config.PLAYER_DIR_PATH, filename), mobile.Mobile)
         if p.name == player_name:
             return True
     return False
 
 
 def player_exists(player_uuid):
-    return os.path.exists(PLAYER_FILE_PATH % util.uuid_to_base32(player_uuid))
+    return os.path.exists(config.PLAYER_FILE_PATH % util.uuid_to_base32(player_uuid))
 
 
 def load_player(player_uuid):
-    return storage.load_file(PLAYER_FILE_PATH % util.uuid_to_base32(player_uuid), mobile.Mobile)
+    return storage.load_file(config.PLAYER_FILE_PATH % util.uuid_to_base32(player_uuid), mobile.Mobile)
 
 
 def save_player(player):
-    storage.save_object(PLAYER_FILE_PATH % util.uuid_to_base32(player.uuid), player)
+    storage.save_object(config.PLAYER_FILE_PATH % util.uuid_to_base32(player.uuid), player)

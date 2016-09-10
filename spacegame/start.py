@@ -3,23 +3,17 @@ import os.path
 import pants
 from pantsmud.driver import game, net
 import spacegame
-from spacegame.core import user
+from spacegame import config
 from spacegame.universe import celestial, persist, star_system, universe
-
-
-UNIVERSE_PATH = os.path.abspath("data/universe/")
-UNIVERSE_FILE = os.path.join(UNIVERSE_PATH, "universe.json")
-STAR_SYSTEM_PATH = os.path.join(UNIVERSE_PATH, "star_systems")
-CELESTIAL_PATH = os.path.join(UNIVERSE_PATH, "celestials")
 
 
 def check_and_create_directories():
     ensure_dirs_exist = [
-        UNIVERSE_PATH,
-        STAR_SYSTEM_PATH,
-        CELESTIAL_PATH,
-        user.USER_DIR_PATH,
-        user.PLAYER_DIR_PATH
+        config.UNIVERSE_PATH,
+        config.STAR_SYSTEM_PATH,
+        config.CELESTIAL_PATH,
+        config.USER_DIR_PATH,
+        config.PLAYER_DIR_PATH
     ]
     for d in ensure_dirs_exist:
         directory = os.path.abspath(d)
@@ -28,7 +22,7 @@ def check_and_create_directories():
 
 
 def check_and_create_universe():
-    if os.path.exists(UNIVERSE_FILE):
+    if os.path.exists(config.UNIVERSE_FILE):
         logging.debug("Universe exists, skipping creation.")
         return
     u = universe.Universe()
@@ -45,18 +39,18 @@ def check_and_create_universe():
 
 
 def load_universe():
-    u = persist.load_universe(UNIVERSE_FILE)
-    for s in persist.load_star_systems(STAR_SYSTEM_PATH):
+    u = persist.load_universe(config.UNIVERSE_FILE)
+    for s in persist.load_star_systems(config.STAR_SYSTEM_PATH):
         u.add_star_system(s)
-    for c in persist.load_celestials(CELESTIAL_PATH):
+    for c in persist.load_celestials(config.CELESTIAL_PATH):
         u.add_celestial(c)
     return u
 
 
 def save_universe(u):
-    persist.save_celestials(CELESTIAL_PATH, u)
-    persist.save_star_systems(STAR_SYSTEM_PATH, u)
-    persist.save_universe(UNIVERSE_FILE, u)
+    persist.save_celestials(config.CELESTIAL_PATH, u)
+    persist.save_star_systems(config.STAR_SYSTEM_PATH, u)
+    persist.save_universe(config.UNIVERSE_FILE, u)
 
 
 def main():

@@ -47,5 +47,5 @@ class ShutdownIntegrationTestCase(IntegrationTestCase):
         self.assertEqual('', response)
 
         client = socket.socket()
-        client.settimeout(5.0)
+        client.settimeout(15.0)
         self.assertRaises(socket.error, client.connect, ('127.0.0.1', self._port))

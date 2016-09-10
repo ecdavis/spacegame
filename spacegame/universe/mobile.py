@@ -49,9 +49,9 @@ class Mobile(object):
         }
 
     @property
-    def world(self):
+    def environment(self):
         """
-        Get the Mobile's World, if it has one.
+        Get the Mobile's Environment, if it has one.
         """
         # TODO This is really hacky. Either rename Universe to World or reconsider PantsMUD's
         # TODO on brains having a world attached.

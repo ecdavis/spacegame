@@ -1,5 +1,5 @@
 import uuid
-from pantsmud.driver import hook, auxiliary
+from pantsmud.driver import auxiliary, hook
 
 
 class StarSystem(object):

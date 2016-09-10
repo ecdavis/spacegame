@@ -53,7 +53,8 @@ def save_universe(u):
     persist.save_universe(config.path.universe_file, u)
 
 
-def main():
+def main(data_dir):
+    config.configure(data_dir)
     check_and_create_directories()
     check_and_create_universe()
     spacegame.init()

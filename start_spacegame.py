@@ -7,4 +7,4 @@ if __name__ == '__main__':
     else:
         logging.basicConfig(level=logging.INFO)
 
-    main()
+    main("data")

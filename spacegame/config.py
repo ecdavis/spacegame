@@ -2,12 +2,18 @@ import os.path
 
 
 class _PathConfig(object):
-    def __init__(self, data_path):
-        self.data_path = os.path.abspath(data_path)
+    def __init__(self, data_dir):
+        if data_dir is not None:
+            data_dir = os.path.abspath(data_dir)
+            if not os.path.exists(data_dir):
+                raise Exception("Invalid configuration.")  # TODO Proper exception
+        self._data_dir = data_dir
 
     @property
     def data_dir(self):
-        return self.data_path
+        if self._data_dir is None:
+            raise Exception("Invalid configuration.")  # TODO Proper exception
+        return self._data_dir
 
     @property
     def universe_dir(self):
@@ -42,4 +48,9 @@ class _PathConfig(object):
         return os.path.join(self.player_dir, "%s.mobile.json")
 
 
-path = _PathConfig("data")
+path = _PathConfig(None)
+
+
+def configure(data_dir):
+    global path
+    path = _PathConfig(data_dir)

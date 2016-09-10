@@ -9,11 +9,11 @@ from spacegame.universe import celestial, persist, star_system, universe
 
 def check_and_create_directories():
     ensure_dirs_exist = [
-        config.UNIVERSE_PATH,
-        config.STAR_SYSTEM_PATH,
-        config.CELESTIAL_PATH,
-        config.USER_DIR_PATH,
-        config.PLAYER_DIR_PATH
+        config.path.universe_dir,
+        config.path.star_system_dir,
+        config.path.celestial_dir,
+        config.path.user_dir,
+        config.path.player_dir
     ]
     for d in ensure_dirs_exist:
         directory = os.path.abspath(d)
@@ -22,7 +22,7 @@ def check_and_create_directories():
 
 
 def check_and_create_universe():
-    if os.path.exists(config.UNIVERSE_FILE):
+    if os.path.exists(config.path.universe_file):
         logging.debug("Universe exists, skipping creation.")
         return
     u = universe.Universe()
@@ -39,18 +39,18 @@ def check_and_create_universe():
 
 
 def load_universe():
-    u = persist.load_universe(config.UNIVERSE_FILE)
-    for s in persist.load_star_systems(config.STAR_SYSTEM_PATH):
+    u = persist.load_universe(config.path.universe_file)
+    for s in persist.load_star_systems(config.path.star_system_dir):
         u.add_star_system(s)
-    for c in persist.load_celestials(config.CELESTIAL_PATH):
+    for c in persist.load_celestials(config.path.celestial_dir):
         u.add_celestial(c)
     return u
 
 
 def save_universe(u):
-    persist.save_celestials(config.CELESTIAL_PATH, u)
-    persist.save_star_systems(config.STAR_SYSTEM_PATH, u)
-    persist.save_universe(config.UNIVERSE_FILE, u)
+    persist.save_celestials(config.path.celestial_dir, u)
+    persist.save_star_systems(config.path.star_system_dir, u)
+    persist.save_universe(config.path.universe_file, u)
 
 
 def main():

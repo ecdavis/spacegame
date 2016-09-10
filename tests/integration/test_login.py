@@ -79,8 +79,9 @@ class LoginIntegrationTestCase(IntegrationTestCase):
         # TODO Verify error message
 
     def test_quit(self):
-        self.socket.send("quit\r\b")
-        self.assertRaises(socket.error, self.socket.recv, 4096)
+        self.socket.send("quit\r\n")
+        response = self.socket.recv(4096)
+        self.assertEqual('', response)
 
     def test_quit_with_parameters_returns_error(self):
         self.socket.send("quit one\r\n")

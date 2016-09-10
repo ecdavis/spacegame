@@ -89,6 +89,7 @@ def main(data_dir, addr):
     # Start the game
     spacegame.start()
     pantsmud.game.start()
+    server.close()
 
     # Save the universe!
     save_universe(universe)

@@ -28,15 +28,23 @@ def check_and_create_universe():
         logging.debug("Universe exists, skipping creation.")
         return
     u = universe.Universe()
-    s = star_system.StarSystem()
-    s.name = "The Solar System"
-    u.add_star_system(s)
-    c = celestial.Celestial()
-    c.name = "Sol"
-    u.add_celestial(c)
-    c.star_system = s
-    s.core_celestial_uuids.add(c.uuid)
-    u.core_star_system_uuids.add(s.uuid)
+    s1 = star_system.StarSystem()
+    s1.name = "The Solar System"
+    u.add_star_system(s1)
+    c1 = celestial.Celestial()
+    c1.name = "Sol"
+    u.add_celestial(c1)
+    c1.star_system = s1
+    s1.core_celestial_uuids.add(c1.uuid)
+    u.core_star_system_uuids.add(s1.uuid)
+    s2 = star_system.StarSystem()
+    s2.name = "Alpha Centauri"
+    u.add_star_system(s2)
+    c2 = celestial.Celestial()
+    c2.name = "Alpha Centauri"
+    u.add_celestial(c2)
+    c2.star_system = s2
+    s2.core_celestial_uuids.add(c2.uuid)
     save_universe(u)
 
 

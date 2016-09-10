@@ -1,5 +1,6 @@
 import json
 import socket
+import time
 from tests.integration.util import IntegrationTestCase
 
 
@@ -46,6 +47,8 @@ class ShutdownIntegrationTestCase(IntegrationTestCase):
         response = self.socket.recv(4096)
         self.assertEqual('', response)
 
+        time.sleep(2.0)
+
         client = socket.socket()
-        client.settimeout(15.0)
+        client.settimeout(1.0)
         self.assertRaises(socket.error, client.connect, ('127.0.0.1', self._port))

@@ -2,6 +2,7 @@ import unittest
 from tests.integration.test_info import InfoIntegrationTestCase
 from tests.integration.test_jump import JumpIntegrationTestCase
 from tests.integration.test_login import LoginIntegrationTestCase
+from tests.integration.test_thrust import ThrustIntegrationTestCase
 from tests.integration.test_warp import WarpIntegrationTestCase
 
 
@@ -10,5 +11,6 @@ def get_integration_tests():
         unittest.TestLoader().loadTestsFromTestCase(InfoIntegrationTestCase),
         unittest.TestLoader().loadTestsFromTestCase(JumpIntegrationTestCase),
         unittest.TestLoader().loadTestsFromTestCase(LoginIntegrationTestCase),
+        unittest.TestLoader().loadTestsFromTestCase(ThrustIntegrationTestCase),
         unittest.TestLoader().loadTestsFromTestCase(WarpIntegrationTestCase)
     ])

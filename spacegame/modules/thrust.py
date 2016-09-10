@@ -11,7 +11,7 @@ def thrust_speed_command(mobile, cmd, args):
     params = parser.parse([("speed", parser.INT)], args)
     speed = params["speed"]
     if speed < 0 or speed > 10:
-        raise error.CommandError()  # TODO Add error message.
+        raise error.CommandFail()  # TODO Add error message.
     mobile.speed = speed
     message.command_success(mobile, cmd)
 

@@ -17,7 +17,7 @@ class IntegrationTestCase(unittest.TestCase):
         print "integration test data dir:", cls._data_dir
         cls._game_thread = threading.Thread(target=main, args=(cls._data_dir,))
         cls._game_thread.start()
-        time.sleep(1)
+        time.sleep(1)  # TODO Figure out a way to remove this.
 
     @classmethod
     def tearDownClass(cls):

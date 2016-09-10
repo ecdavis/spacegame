@@ -1,4 +1,5 @@
 import shutil
+import socket
 import tempfile
 import threading
 import time
@@ -18,6 +19,14 @@ class IntegrationTestCase(unittest.TestCase):
         cls._game_thread = threading.Thread(target=main, args=(cls._data_dir,))
         cls._game_thread.start()
         time.sleep(1)  # TODO Figure out a way to remove this.
+
+    def setUp(self):
+        self.socket = socket.socket()
+        self.socket.settimeout(1.0)
+        self.socket.connect(('127.0.0.1', 4040))
+
+    def tearDown(self):
+        self.socket.close()
 
     @classmethod
     def tearDownClass(cls):

@@ -1,5 +1,5 @@
 import logging
-from spacegame.start import main
+from spacegame.application import main
 
 if __name__ == '__main__':
     if __debug__:

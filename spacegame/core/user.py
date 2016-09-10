@@ -1,7 +1,7 @@
 import os
 import os.path
 import uuid
-from pantsmud.driver import storage, util
+from pantsmud.util import convert, storage
 from spacegame import config
 from spacegame.universe import mobile
 
@@ -26,15 +26,15 @@ class User(object):
 
 
 def user_exists(user_uuid):
-    return os.path.exists(config.path.user_file_pattern % util.uuid_to_base32(user_uuid))
+    return os.path.exists(config.path.user_file_pattern % convert.uuid_to_base32(user_uuid))
 
 
 def load_user(user_uuid):
-    return storage.load_file(config.path.user_file_pattern % util.uuid_to_base32(user_uuid), User)
+    return storage.load_file(config.path.user_file_pattern % convert.uuid_to_base32(user_uuid), User)
 
 
 def save_user(user):
-    storage.save_object(config.path.user_file_pattern % util.uuid_to_base32(user.uuid), user)
+    storage.save_object(config.path.user_file_pattern % convert.uuid_to_base32(user.uuid), user)
 
 
 def player_name_exists(player_name):
@@ -46,12 +46,12 @@ def player_name_exists(player_name):
 
 
 def player_exists(player_uuid):
-    return os.path.exists(config.path.player_file_pattern % util.uuid_to_base32(player_uuid))
+    return os.path.exists(config.path.player_file_pattern % convert.uuid_to_base32(player_uuid))
 
 
 def load_player(player_uuid):
-    return storage.load_file(config.path.player_file_pattern % util.uuid_to_base32(player_uuid), mobile.Mobile)
+    return storage.load_file(config.path.player_file_pattern % convert.uuid_to_base32(player_uuid), mobile.Mobile)
 
 
 def save_player(player):
-    storage.save_object(config.path.player_file_pattern % util.uuid_to_base32(player.uuid), player)
+    storage.save_object(config.path.player_file_pattern % convert.uuid_to_base32(player.uuid), player)

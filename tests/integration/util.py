@@ -4,7 +4,7 @@ import tempfile
 import threading
 import time
 import unittest
-from pantsmud.driver import game
+import pantsmud.game
 from spacegame.application import main
 
 
@@ -30,7 +30,7 @@ class IntegrationTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        game.engine.stop()
+        pantsmud.game.engine.stop()
         if cls._game_thread:
             cls._game_thread.join(1.0)
         if cls._data_dir:

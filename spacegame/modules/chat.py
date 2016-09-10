@@ -1,5 +1,5 @@
-from pantsmud.driver import error, message, parser
-
+from pantsmud.driver import parser
+from pantsmud.util import error, message
 from spacegame.core import command_manager
 
 

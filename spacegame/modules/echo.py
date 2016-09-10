@@ -1,5 +1,7 @@
-from pantsmud.driver import hook, message, parser
-from spacegame.core import command_manager, game, user
+import pantsmud.game
+from pantsmud.driver import hook, parser
+from pantsmud.util import message
+from spacegame.core import command_manager, user
 
 
 def echo_command(mobile, cmd, args):
@@ -13,7 +15,7 @@ def quit_command(mobile, _, args):
 
 def shutdown_command(mobile, _, args):
     parser.parse([], args)
-    universe = game.get_universe()
+    universe = pantsmud.game.environment
     for m in [universe.mobiles[u] for u in universe.mobiles]:
         if m.brain.is_user:
             user.save_player(m)

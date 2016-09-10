@@ -1,7 +1,9 @@
 import logging
 import os.path
 import pants
-from pantsmud.driver import game, net
+import pantsmud.driver
+import pantsmud.game
+import pantsmud.net
 import spacegame
 from spacegame import config
 from spacegame.universe import celestial, persist, star_system, universe
@@ -54,14 +56,28 @@ def save_universe(u):
 
 
 def main(data_dir):
+
+    # Ensure data exists/is created
     config.configure(data_dir)
     check_and_create_directories()
     check_and_create_universe()
-    spacegame.init()
-    engine = pants.Engine.instance()
     universe = load_universe()
-    game.init(engine, universe)
-    net.init()
+
+    # Create the engine
+    engine = pants.Engine.instance()
+
+    # Load up our code -- driver before game
+    pantsmud.driver.init()
+    pantsmud.game.init(engine, universe)
+    spacegame.init()
+
+    # Create the server
+    server = pantsmud.net.GameServer(engine=engine)
+    server.listen(4040)
+
+    # Start the game
     spacegame.start()
-    game.start()
+    pantsmud.game.start()
+
+    # Save the universe!
     save_universe(universe)

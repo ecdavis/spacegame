@@ -1,7 +1,9 @@
 import logging
 import random
-from pantsmud.driver import error, message, parser
-from spacegame.core import command_manager, game, login_manager, user
+import pantsmud.game
+from pantsmud.driver import parser
+from pantsmud.util import error, message
+from spacegame.core import command_manager, login_manager, user
 from spacegame.universe import mobile
 
 
@@ -12,7 +14,7 @@ def register_command(brain, cmd, args):
     u = user.User()
     p = mobile.Mobile()
     p.name = params["name"]
-    star_system = random.choice(list(game.get_universe().core_star_systems))
+    star_system = random.choice(list(pantsmud.game.environment.core_star_systems))
     p.celestial = random.choice(list(star_system.core_celestials))
     u.player_uuid = p.uuid
     user.save_user(u)
@@ -34,7 +36,7 @@ def login_command(brain, cmd, args):
     message.command_success(brain, cmd, {"name": p.name})
     brain.replace_input_handler(command_manager.command_input_handler, "game")
     p.attach_brain(brain)
-    game.get_universe().add_mobile(p)
+    pantsmud.game.environment.add_mobile(p)
 
 
 def quit_command(brain, _, args):

@@ -1,11 +1,13 @@
-from pantsmud.driver import error, message, parser
 import random
-from spacegame.core import command_manager, game
+import pantsmud.game
+from pantsmud.driver import parser
+from pantsmud.util import error, message
+from spacegame.core import command_manager
 
 
 def jump_command(mobile, cmd, args):
     params = parser.parse([("system_name", parser.STRING)], args)
-    universe = game.get_universe()
+    universe = pantsmud.game.environment
     star_system = universe.get_star_system(params["system_name"])
     if not star_system:
         raise error.CommandFail()  # TODO Add error message.

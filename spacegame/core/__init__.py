@@ -1,6 +1,5 @@
-from spacegame.core import echo, handler
+from spacegame.core import handler
 
 
 def init():
-    echo.init()
     handler.init()

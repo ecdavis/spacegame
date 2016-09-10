@@ -1,5 +1,9 @@
 import logging
-from pantsmud.driver import command, message
+from pantsmud.driver import command
+from pantsmud.util import message
+
+
+_command_manager = None
 
 
 class GameCommandManager(command.CommandManager):
@@ -13,7 +17,20 @@ class GameCommandManager(command.CommandManager):
             return
         return command.CommandManager.input_handler(self, brain, line)
 
-_game_command_manager = GameCommandManager(__name__)
-add_command = _game_command_manager.add
-command_exists = _game_command_manager.exists
-command_input_handler = _game_command_manager.input_handler
+
+def add_command(name, func):
+    return _command_manager.add(name, func)
+
+
+def command_exists(name):
+    return _command_manager.exists(name)
+
+
+def command_input_handler(actor, line):
+    return _command_manager.input_handler(actor, line)
+
+
+def init():
+    global _command_manager
+    _command_manager = GameCommandManager(__name__)
+

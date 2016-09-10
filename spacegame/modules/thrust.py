@@ -1,6 +1,7 @@
-from pantsmud.driver import error, game, message, parser
+import pantsmud.game
+from pantsmud.driver import parser
+from pantsmud.util import error, message
 from spacegame.core import command_manager
-from spacegame.core.game import get_universe
 
 
 POSITION_UPDATE_TICK = 0.1
@@ -36,7 +37,7 @@ def position_update(mobile, seconds):
 
 
 def position_update_cycle():
-    for mobile in get_universe().mobiles.values():
+    for mobile in pantsmud.game.environment.mobiles.values():
         position_update(mobile, POSITION_UPDATE_TICK)
 
 
@@ -46,4 +47,4 @@ def init():
 
 
 def start():
-    game.engine.cycle(POSITION_UPDATE_TICK, position_update_cycle)
+    pantsmud.game.engine.cycle(POSITION_UPDATE_TICK, position_update_cycle)

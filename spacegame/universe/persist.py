@@ -1,4 +1,4 @@
-from pantsmud.driver import storage
+from pantsmud.util import storage
 from spacegame.universe import celestial, star_system, universe
 
 

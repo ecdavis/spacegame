@@ -1,4 +1,5 @@
-from pantsmud.driver import message, parser
+from pantsmud.driver import parser
+from pantsmud.util import message
 from spacegame.core import command_manager
 
 

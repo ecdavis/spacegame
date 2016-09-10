@@ -16,7 +16,7 @@ class Universe(object):
         self.star_systems = {}
         self.celestials = {}
         self.core_star_system_uuids = set()
-        self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_WORLD)
+        self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_ENVIRONMENT)
 
     def load_data(self, data):
         """
@@ -55,7 +55,7 @@ class Universe(object):
         """
         Add a Brain to the Universe.
         """
-        brain.world = self
+        brain.environment = self
         self.brains[brain.uuid] = brain
 
     def remove_brain(self, brain):
@@ -63,7 +63,7 @@ class Universe(object):
         Remove a Brain from the Universe.
         """
         del self.brains[brain.uuid]
-        brain.universe = None
+        brain.environment = None
 
     def get_mobile(self, mobile_name):
         """

@@ -81,3 +81,10 @@ class LoginIntegrationTestCase(IntegrationTestCase):
     def test_quit(self):
         self.socket.send("quit\r\b")
         self.assertRaises(socket.error, self.socket.recv, 4096)
+
+    def test_quit_with_parameters_returns_error(self):
+        self.socket.send("quit one\r\n")
+        response = json.loads(self.socket.recv(4096))
+        self.assertEqual("command.error", response["message"])
+        self.assertEqual("quit", response["data"]["command"])
+        # TODO Verify error message

@@ -63,8 +63,7 @@ def save_universe(u):
     persist.save_universe(config.path.universe_file, u)
 
 
-def main(data_dir):
-
+def main(data_dir, addr):
     # Ensure data exists/is created
     config.configure(data_dir)
     check_and_create_directories()
@@ -81,7 +80,7 @@ def main(data_dir):
 
     # Create the server
     server = pantsmud.net.GameServer(engine=engine)
-    server.listen(4040)
+    server.listen(addr)
 
     # Start the game
     spacegame.start()

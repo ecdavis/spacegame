@@ -1,4 +1,5 @@
 import json
+import random
 import shutil
 import socket
 import tempfile
@@ -9,6 +10,10 @@ import pantsmud.game
 from spacegame.application import main
 
 
+def _random_port():
+    return random.randint(10000, 50000)
+
+
 class IntegrationTestCase(unittest.TestCase):
     _game_thread = None
     _data_dir = None
@@ -17,14 +22,16 @@ class IntegrationTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls._data_dir = tempfile.mkdtemp()
         print "integration test data dir:", cls._data_dir
-        cls._game_thread = threading.Thread(target=main, args=(cls._data_dir,))
+        cls._port = _random_port()
+        print "integration test port", cls._port
+        cls._game_thread = threading.Thread(target=main, args=(cls._data_dir, cls._port))
         cls._game_thread.start()
         time.sleep(1)  # TODO Figure out a way to remove this.
 
     def setUp(self):
         self.socket = socket.socket()
         self.socket.settimeout(1.0)
-        self.socket.connect(('127.0.0.1', 4040))
+        self.socket.connect(('127.0.0.1', self._port))
 
     def tearDown(self):
         self.socket.close()

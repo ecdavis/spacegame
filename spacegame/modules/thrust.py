@@ -23,9 +23,9 @@ def thrust_vector_command(mobile, cmd, args):
     z = round(params["z"], 3)
     vector = (x, y, z)
     if x > 1.0 or y > 1.0 or z > 1.0:
-        raise error.CommandError()  # TODO Add error message.
+        raise error.CommandFail()  # TODO Add error message.
     if abs(1.0 - sum((abs(x), abs(y), abs(z)))) > 0.001:
-        raise error.CommandError()  # TODO Add error message.
+        raise error.CommandFail()  # TODO Add error message.
     mobile.vector = vector
     message.command_success(mobile, cmd)
 

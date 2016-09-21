@@ -32,7 +32,7 @@ class User(object):
     @property
     def brain(self):
         """
-        Get the Mobile's Brain, if it has one.
+        Get the User's Brain, if it has one.
         """
         if self.brain_uuid:
             return self.universe.brains[self.brain_uuid]
@@ -42,7 +42,7 @@ class User(object):
     @brain.setter
     def brain(self, brain):
         """
-        Set the Mobile's Brain.
+        Set the User's Brain.
         """
         if brain:
             self.brain_uuid = brain.uuid
@@ -51,16 +51,16 @@ class User(object):
 
     def attach_brain(self, brain):
         """
-        Attach a Brain to this Mobile.
+        Attach a Brain to this User.
         """
         self.brain = brain
-        brain.mobile = self
+        brain.identity = self
 
     def detach_brain(self):
         """
-        Detach a Brain from this Mobile.
+        Detach a Brain from this User.
         """
-        self.brain.mobile = None
+        self.brain.identity = None
         self.brain = None
 
 

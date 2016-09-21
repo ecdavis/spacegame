@@ -8,8 +8,8 @@ _command_manager = None
 
 class LoginCommandManager(command.CommandManager):
     def input_handler(self, brain, line):
-        if not brain.is_user:
-            logging.error("Brain '%s' has login input handler but it is not a user.", str(brain.uuid))
+        if not brain.is_client:
+            logging.error("Brain '%s' has login input handler but it is not a client.", str(brain.uuid))
             message.command_internal_error(brain)
             return
         if brain.mobile:

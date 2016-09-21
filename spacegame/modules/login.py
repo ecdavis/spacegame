@@ -1,9 +1,9 @@
 import logging
 import random
 import pantsmud.game
-from pantsmud.driver import parser
+from pantsmud.driver import command, parser
 from pantsmud.util import error, message
-from spacegame.core import command_manager, login_manager, user
+from spacegame.core import login_manager, user
 from spacegame.universe import mobile
 
 
@@ -34,7 +34,7 @@ def login_command(brain, cmd, args):
         raise error.CommandFail()  # TODO Add error message.
     p = user.load_player(u.player_uuid)
     message.command_success(brain, cmd, {"name": p.name})
-    brain.replace_input_handler(command_manager.command_input_handler, "game")
+    brain.replace_input_handler(command.command_input_handler, "game")
     p.attach_brain(brain)
     pantsmud.game.environment.add_mobile(p)
 

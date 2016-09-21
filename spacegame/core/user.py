@@ -12,17 +12,56 @@ class User(object):
             self.uuid = user_uuid
         else:
             self.uuid = uuid.uuid4()
+        self.name = ""
+        self.universe = None
+        self.brain_uuid = None
         self.player_uuid = None
 
     def load_data(self, data):
         self.uuid = uuid.UUID(data["uuid"])
+        self.name = data["name"]
         self.player_uuid = uuid.UUID(data["player_uuid"]) if data["player_uuid"] else None
 
     def save_data(self):
         return {
             "uuid": str(self.uuid),
+            "name": str(self.name),
             "player_uuid": str(self.player_uuid) if self.player_uuid else ''
         }
+
+    @property
+    def brain(self):
+        """
+        Get the User's Brain, if it has one.
+        """
+        if self.brain_uuid:
+            return self.universe.brains[self.brain_uuid]
+        else:
+            return self.brain_uuid
+
+    @brain.setter
+    def brain(self, brain):
+        """
+        Set the User's Brain.
+        """
+        if brain:
+            self.brain_uuid = brain.uuid
+        else:
+            self.brain_uuid = None
+
+    def attach_brain(self, brain):
+        """
+        Attach a Brain to this User.
+        """
+        self.brain = brain
+        brain.identity = self
+
+    def detach_brain(self):
+        """
+        Detach a Brain from this User.
+        """
+        self.brain.identity = None
+        self.brain = None
 
 
 def user_exists(user_uuid):

@@ -12,6 +12,7 @@ def register_command(brain, cmd, args):
     if user.player_name_exists(params["name"]):
         raise error.CommandFail()  # TODO Add error message.
     u = user.User()
+    u.name = params["name"]
     p = mobile.Mobile()
     p.name = params["name"]
     star_system = random.choice(list(pantsmud.game.environment.core_star_systems))
@@ -32,11 +33,13 @@ def login_command(brain, cmd, args):
     if not u.player_uuid or not user.player_exists(u.player_uuid):
         logging.debug("login failed due to non-existent player")
         raise error.CommandFail()  # TODO Add error message.
+    u.attach_brain(brain)
+    pantsmud.game.environment.add_identity(u)
     p = user.load_player(u.player_uuid)
-    message.command_success(brain, cmd, {"name": p.name})
-    brain.replace_input_handler(command.command_input_handler, "game")
     p.attach_brain(brain)
     pantsmud.game.environment.add_mobile(p)
+    message.command_success(brain, cmd, {"name": p.name})
+    brain.replace_input_handler(command.command_input_handler, "game")
 
 
 def quit_command(brain, _, args):

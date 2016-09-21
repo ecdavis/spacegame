@@ -12,6 +12,7 @@ class Universe(object):
     def __init__(self):
         self.sessions = set()
         self.brains = {}
+        self.identities = {}
         self.mobiles = {}
         self.star_systems = {}
         self.celestials = {}
@@ -64,6 +65,29 @@ class Universe(object):
         """
         del self.brains[brain.uuid]
         brain.environment = None
+
+    def get_identity(self, identity_name):
+        """
+        Get an Identity by name.
+        """
+        for identity in self.identities.itervalues():
+            if identity.name == identity_name:
+                return identity
+        return None
+
+    def add_identity(self, identity):
+        """
+        Add an Identity to the Universe.
+        """
+        identity.universe = self
+        self.identities[identity.uuid] = identity
+
+    def remove_identity(self, identity):
+        """
+        Remove an Identity from the Universe.
+        """
+        del self.identities[identity.uuid]
+        identity.universe = None
 
     def get_mobile(self, mobile_name):
         """

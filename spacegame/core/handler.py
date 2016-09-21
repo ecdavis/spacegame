@@ -17,7 +17,7 @@ def close_brain_hook(_, brain):
         mobile.detach_brain()
         if pantsmud.game.environment:
             pantsmud.game.environment.remove_mobile(mobile)
-    if brain.is_client:
+    if brain.identity:
         identity = brain.identity
         identity.detach_brain()
         if pantsmud.game.environment:

@@ -18,7 +18,7 @@ def shutdown_command(brain, _, args):
     parser.parse([], args)
     universe = pantsmud.game.environment
     for m in [universe.mobiles[u] for u in universe.mobiles]:
-        if m.brain.is_client:
+        if m.brain.identity:
             user.save_player(m)
             m.brain.close()
     hook.run(hook.HOOK_SHUTDOWN)

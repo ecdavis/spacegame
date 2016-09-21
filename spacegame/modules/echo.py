@@ -1,19 +1,20 @@
 import pantsmud.game
-from pantsmud.driver import hook, parser
+from pantsmud.driver import command, hook, parser
 from pantsmud.util import message
-from spacegame.core import command_manager, user
+from spacegame.core import user
 
 
-def echo_command(mobile, cmd, args):
+def echo_command(brain, cmd, args):
+    mobile = brain.mobile
     message.command_success(mobile, cmd, {"line": args})
 
 
-def quit_command(mobile, _, args):
+def quit_command(brain, _, args):
     parser.parse([], args)
-    mobile.brain.close()
+    brain.close()
 
 
-def shutdown_command(mobile, _, args):
+def shutdown_command(brain, _, args):
     parser.parse([], args)
     universe = pantsmud.game.environment
     for m in [universe.mobiles[u] for u in universe.mobiles]:
@@ -24,6 +25,6 @@ def shutdown_command(mobile, _, args):
 
 
 def init():
-    command_manager.add_command("echo", echo_command)
-    command_manager.add_command("quit", quit_command)
-    command_manager.add_command("shutdown", shutdown_command)
+    command.add_command("echo", echo_command)
+    command.add_command("quit", quit_command)
+    command.add_command("shutdown", shutdown_command)

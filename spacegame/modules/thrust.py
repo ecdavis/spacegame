@@ -1,14 +1,14 @@
 import pantsmud.game
-from pantsmud.driver import parser
+from pantsmud.driver import command, parser
 from pantsmud.util import error, message
-from spacegame.core import command_manager
 
 
 POSITION_UPDATE_TICK = 0.1
 
 
-def thrust_speed_command(mobile, cmd, args):
+def thrust_speed_command(brain, cmd, args):
     params = parser.parse([("speed", parser.INT)], args)
+    mobile = brain.mobile
     speed = params["speed"]
     if speed < 0 or speed > 10:
         raise error.CommandFail()  # TODO Add error message.
@@ -16,8 +16,9 @@ def thrust_speed_command(mobile, cmd, args):
     message.command_success(mobile, cmd)
 
 
-def thrust_vector_command(mobile, cmd, args):
+def thrust_vector_command(brain, cmd, args):
     params = parser.parse([("x", parser.FLOAT), ("y", parser.FLOAT), ("z", parser.FLOAT)], args)
+    mobile = brain.mobile
     x = round(params["x"], 3)
     y = round(params["y"], 3)
     z = round(params["z"], 3)
@@ -42,8 +43,8 @@ def position_update_cycle():
 
 
 def init():
-    command_manager.add_command("thrust.speed", thrust_speed_command)
-    command_manager.add_command("thrust.vector", thrust_vector_command)
+    command.add_command("thrust.speed", thrust_speed_command)
+    command.add_command("thrust.vector", thrust_vector_command)
 
 
 def start():

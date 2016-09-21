@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="spacegame",
-    version="0.1",
+    version="0.2",
     description="",
     author="ecdavis",
     author_email="me@ezdwt.com",

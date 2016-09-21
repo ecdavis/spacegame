@@ -15,12 +15,15 @@ def close_brain_hook(_, brain):
     if brain.mobile:
         mobile = brain.mobile
         mobile.detach_brain()
-        pantsmud.game.environment.remove_mobile(mobile)
+        if pantsmud.game.environment:
+            pantsmud.game.environment.remove_mobile(mobile)
     if brain.identity:
         identity = brain.identity
         identity.detach_brain()
-        pantsmud.game.environment.remove_identity(identity)
-    pantsmud.game.environment.remove_brain(brain)
+        if pantsmud.game.environment:
+            pantsmud.game.environment.remove_identity(identity)
+    if pantsmud.game.environment:
+        pantsmud.game.environment.remove_brain(brain)
 
 
 def init():

@@ -37,7 +37,7 @@ def login_command(brain, cmd, args):
     pantsmud.game.environment.add_identity(u)
     p = user.load_player(u.player_uuid)
     p.attach_brain(brain)
-    pantsmud.game.environment.add_mobile(p)
+    pantsmud.game.environment.add_entity(p)
     message.command_success(brain, cmd, {"name": p.name})
     brain.replace_input_handler(command.command_input_handler, "game")
 

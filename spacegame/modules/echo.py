@@ -17,7 +17,7 @@ def quit_command(brain, _, args):
 def shutdown_command(brain, _, args):
     parser.parse([], args)
     universe = pantsmud.game.environment
-    for m in [universe.mobiles[u] for u in universe.mobiles]:
+    for m in universe.get_mobiles():
         if m.brain.identity:
             user.save_player(m)
             m.brain.close()

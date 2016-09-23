@@ -139,6 +139,17 @@ class Universe(object):
                 return celestial
         return None
 
+    def get_celestials(self, star_systems=None, uuids=None):
+        """
+        Get Celestials filtered by StarSystem, UUID, or both.
+        """
+        celestials = self.celestials.values()
+        if star_systems is not None:
+            celestials = filter(lambda c: c.star_system in star_systems, celestials)
+        if uuids is not None:
+            celestials = filter(lambda c: c.uuid in uuids, celestials)
+        return celestials
+
     def add_celestial(self, celestial):
         """
         Add a Celestial to the Universe.

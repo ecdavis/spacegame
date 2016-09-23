@@ -1,7 +1,7 @@
 import pantsmud.game
 from pantsmud.driver import auxiliary, command, hook, parser
 from pantsmud.util import error, message
-from spacegame.core import hook_types
+from spacegame.core import aux_types, hook_types
 
 
 class WarpAux(object):
@@ -56,7 +56,7 @@ def clear_warp_scanner(_, mobile):
 
 
 def init():
-    auxiliary.install(auxiliary.AUX_TYPE_MOBILE, "warp", WarpAux)
+    auxiliary.install(aux_types.AUX_TYPE_ENTITY, "warp", WarpAux)
     command.add_command("warp", warp_command)
     command.add_command("warp.scan", warp_scan_command)
     command.add_command("warp.scan.activate", warp_scan_activate_command)

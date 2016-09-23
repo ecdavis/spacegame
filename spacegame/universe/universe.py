@@ -1,5 +1,6 @@
 import uuid
 from pantsmud.driver import auxiliary
+from spacegame.universe import mobile
 
 
 class Universe(object):
@@ -13,7 +14,7 @@ class Universe(object):
         self.sessions = set()
         self.brains = {}
         self.identities = {}
-        self.mobiles = {}
+        self.entities = {}
         self.star_systems = {}
         self.celestials = {}
         self.core_star_system_uuids = set()
@@ -89,28 +90,33 @@ class Universe(object):
         del self.identities[identity.uuid]
         identity.universe = None
 
-    def get_mobile(self, mobile_name):
+    def get_entity(self, entity_name):
         """
-        Get a Mobile by name.
+        Get a Entity by name.
         """
-        for mobile in self.mobiles.itervalues():
-            if mobile.name == mobile_name:
-                return mobile
+        for entity in self.entities.itervalues():
+            if entity.name == entity_name:
+                return entity
         return None
 
-    def add_mobile(self, mobile):
+    def add_entity(self, entity):
         """
-        Add a Mobile to the Universe.
+        Add a Entity to the Universe.
         """
-        mobile.universe = self
-        self.mobiles[mobile.uuid] = mobile
+        entity.universe = self
+        self.entities[entity.uuid] = entity
 
-    def remove_mobile(self, mobile):
+    def remove_entity(self, entity):
         """
-        Remove a Mobile from the Universe.
+        Remove a Entity from the Universe.
         """
-        del self.mobiles[mobile.uuid]
-        mobile.universe = None
+        del self.entities[entity.uuid]
+        entity.universe = None
+
+    def get_mobiles(self):
+        mobiles = self.entities.values()
+        mobiles = filter(lambda e: isinstance(e, mobile.Mobile), mobiles)  # TODO Make it a flag
+        return mobiles
 
     def get_star_system(self, star_system_name):
         """

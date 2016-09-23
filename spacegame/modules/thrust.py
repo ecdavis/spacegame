@@ -38,7 +38,7 @@ def position_update(mobile, seconds):
 
 
 def position_update_cycle():
-    for mobile in pantsmud.game.environment.mobiles.values():
+    for mobile in pantsmud.game.environment.entities.values():
         position_update(mobile, POSITION_UPDATE_TICK)
 
 

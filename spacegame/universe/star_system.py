@@ -77,6 +77,25 @@ class StarSystem(object):
             self.reset_timer = interval
         self._reset_interval = interval
 
+    def get_celestials(self, uuids=None):
+        """
+        Get Celestials in this StarSystem, optionally filtered by UUID.
+        """
+        return self.universe.get_celestials(
+            star_systems=[self],
+            uuids=uuids
+        )
+
+    def get_entities(self, uuids=None, is_warp_beacon=None):
+        """
+        Get Entities in this StarSystem, optionally filtered by UUID, flags, or a combination.
+        """
+        return self.universe.get_entities(
+            star_systems=[self],
+            uuids=uuids,
+            is_warp_beacon=is_warp_beacon
+        )
+
     def pulse(self):
         """
         Pulse the StarSystem, i.e. decrement its reset timer.

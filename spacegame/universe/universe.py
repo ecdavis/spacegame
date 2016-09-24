@@ -99,6 +99,19 @@ class Universe(object):
                 return entity
         return None
 
+    def get_entities(self, star_systems=None, uuids=None, is_warp_beacon=None):
+        """
+        Get Entities filtered by StarSystem, UUID, flags, or a combination.
+        """
+        entities = self.entities.values()
+        if star_systems is not None:
+            entities = filter(lambda e: e.star_system in star_systems, entities)
+        if uuids is not None:
+            entities = filter(lambda e: e.uuid in uuids, entities)
+        if is_warp_beacon is not None:
+            entities = filter(lambda e: e.is_warp_beacon is is_warp_beacon, entities)
+        return entities
+
     def add_entity(self, entity):
         """
         Add a Entity to the Universe.
@@ -126,6 +139,15 @@ class Universe(object):
             if star_system.name == star_system_name:
                 return star_system
         return None
+
+    def get_star_systems(self, uuids=None):
+        """
+        Get StarSystems filtered by UUID.
+        """
+        star_systems = self.star_systems.values()
+        if uuids is not None:
+            star_systems = filter(lambda s: s.uuid in uuids, star_systems)
+        return star_systems
 
     def add_star_system(self, star_system):
         """

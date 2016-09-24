@@ -5,7 +5,7 @@ from tests.integration.test_info import InfoIntegrationTestCase
 from tests.integration.test_jump import JumpIntegrationTestCase
 from tests.integration.test_login import LoginIntegrationTestCase
 from tests.integration.test_thrust import ThrustIntegrationTestCase
-from tests.integration.test_warp import WarpIntegrationTestCase
+from tests.integration.test_warp import WarpIntegrationTestCase, WarpStatefulIntegrationTestCase
 
 
 def get_integration_tests():
@@ -18,5 +18,6 @@ def get_integration_tests():
         LoginIntegrationTestCase,
         ThrustIntegrationTestCase,
         WarpIntegrationTestCase,
+        WarpStatefulIntegrationTestCase,
         ShutdownIntegrationTestCase
     )])

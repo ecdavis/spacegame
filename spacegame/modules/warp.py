@@ -17,49 +17,59 @@ class WarpAux(object):
 
 
 def warp_command(brain, cmd, args):
-    params = parser.parse([("celestial_name", parser.STRING)], args)
+    params = parser.parse([("destination_uuid", parser.UUID)], args)
     mobile = brain.mobile
-    universe = pantsmud.game.environment
-    celestial = universe.get_celestial(params["celestial_name"], mobile.star_system)
-    if not celestial or celestial.uuid not in mobile.aux["warp"].scanner:
-        raise error.CommandFail("Could not find celestial to warp to.")  # TODO Add error message.
-    elif mobile.celestial is celestial:
-        raise error.CommandFail()  # TODO Add error message.
+    destination = _find_warp_destination(mobile, params["destination_uuid"])
+    if destination is None:
+        raise error.CommandFail("no destination")
+    elif destination is mobile.celestial:
+        raise error.CommandFail("destination is current celestial")
     hook.run(hook_types.CELESTIAL_EXIT, mobile)
-    mobile.celestial = celestial
+    mobile.celestial = destination
     message.command_success(mobile, cmd)
+
+
+def _find_warp_destination(mobile, destination_uuid):
+    beacons = mobile.star_system.get_entities(is_warp_beacon=True)
+    for beacon in beacons:
+        if beacon.uuid == destination_uuid:
+            return beacon.celestial
+    celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
+    for celestial in celestials:
+        if celestial.uuid == destination_uuid:
+            return celestial
+    return None
 
 
 def warp_beacon_command(brain, cmd, args):
     parser.parse([], args)
     mobile = brain.mobile
-    beacon = entity.Entity()
+    beacon = entity.Entity(is_warp_beacon=True)
     beacon.celestial = mobile.celestial
     beacon.position = mobile.position
     pantsmud.game.environment.add_entity(beacon)
-    message.command_success(mobile, cmd)
+    message.command_success(mobile, cmd, {"beacon_uuid": str(beacon.uuid)})
 
 
 def warp_scan_command(brain, cmd, args):
     parser.parse([], args)
     mobile = brain.mobile
-    universe = pantsmud.game.environment
-    celestials = universe.get_celestials(star_systems=[mobile.star_system], uuids=mobile.aux["warp"].scanner)
-    celestial_uuids = [c.uuid for c in celestials]
-    mobile.aux["warp"].scanner = celestial_uuids
-    celestial_names = [c.name for c in celestials]
-    message.command_success(mobile, cmd, {"celestial_names": celestial_names})
+    beacons = mobile.star_system.get_entities(is_warp_beacon=True)
+    beacon_data = {b.name: str(b.uuid) for b in beacons if b.celestial is not mobile.celestial}
+    celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
+    celestial_data = {c.name: str(c.uuid) for c in celestials if c is not mobile.celestial}
+    message.command_success(mobile, cmd, {"beacons": beacon_data, "celestials": celestial_data})
 
 
 def warp_scan_activate_command(brain, cmd, args):
     parser.parse([], args)
     mobile = brain.mobile
-    universe = pantsmud.game.environment
-    celestials = universe.get_celestials(star_systems=[mobile.star_system])
-    celestial_uuids = [c.uuid for c in celestials]
-    mobile.aux["warp"].scanner = celestial_uuids
-    celestial_names = [c.name for c in celestials]
-    message.command_success(mobile, cmd, {"celestial_names": celestial_names})
+    celestials = mobile.star_system.get_celestials()
+    celestial_data = {c.name: c.uuid for c in celestials if c is not mobile.celestial}
+    mobile.aux["warp"].scanner = celestial_data.values()[:]
+    for k, v in celestial_data.items():  # TODO ugh
+        celestial_data[k] = str(v)
+    message.command_success(mobile, cmd, {"celestials": celestial_data})
 
 
 def clear_warp_scanner(_, mobile):

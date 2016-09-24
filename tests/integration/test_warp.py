@@ -10,9 +10,12 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         response1 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response1["message"])
         self.assertEqual("warp.scan.activate", response1["data"]["command"])
-        self.assertEqual(set(["Sol", "Earth"]), set(response1["data"]["result"]["celestial_names"]))
-        client.send("warp Earth\r\n")
+        response1_celestials = response1["data"]["result"]["celestials"]
+        self.assertEqual({"Earth"}, set(response1_celestials.keys()))
+        print repr(response1_celestials["Earth"])
+        client.send("warp %s\r\n" % str(response1_celestials["Earth"]))
         response2 = json.loads(client.recv(4096))
+        print response2
         self.assertEqual("command.success", response2["message"])
         self.assertEqual("warp", response2["data"]["command"])
 
@@ -67,7 +70,7 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         response = json.loads(client.recv(4096))
         self.assertEqual("command.success", response["message"])
         self.assertEqual("warp.scan", response["data"]["command"])
-        self.assertEqual([], response["data"]["result"]["celestial_names"])
+        self.assertEqual([], response["data"]["result"]["celestials"].keys())
 
     def test_warp_scan_after_active_scan(self):
         client = self.get_client()
@@ -76,12 +79,12 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         response1 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response1["message"])
         self.assertEqual("warp.scan.activate", response1["data"]["command"])
-        self.assertEqual(set(["Sol", "Earth"]), set(response1["data"]["result"]["celestial_names"]))
+        self.assertEqual({"Earth"}, set(response1["data"]["result"]["celestials"].keys()))
         client.send("warp.scan\r\n")
         response2 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response2["message"])
         self.assertEqual("warp.scan", response2["data"]["command"])
-        self.assertEqual(set(["Sol", "Earth"]), set(response2["data"]["result"]["celestial_names"]))
+        self.assertEqual({"Earth"}, set(response2["data"]["result"]["celestials"].keys()))
 
     def test_warp_beacon(self):
         client = self.get_client()

@@ -1,4 +1,5 @@
 import json
+import os.path
 import random
 import shutil
 import socket
@@ -20,7 +21,8 @@ class IntegrationTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._data_dir = tempfile.mkdtemp()
+        cls._data_dir = os.path.join(tempfile.mkdtemp(), 'data')
+        shutil.copytree(os.path.join(os.path.dirname(__file__), 'data'), cls._data_dir)
         print "integration test data dir:", cls._data_dir
         cls._port = _random_port()
         print "integration test port", cls._port

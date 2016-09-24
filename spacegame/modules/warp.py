@@ -2,6 +2,7 @@ import pantsmud.game
 from pantsmud.driver import auxiliary, command, hook, parser
 from pantsmud.util import error, message
 from spacegame.core import aux_types, hook_types
+from spacegame.universe import entity
 
 
 class WarpAux(object):
@@ -26,6 +27,16 @@ def warp_command(brain, cmd, args):
         raise error.CommandFail()  # TODO Add error message.
     hook.run(hook_types.CELESTIAL_EXIT, mobile)
     mobile.celestial = celestial
+    message.command_success(mobile, cmd)
+
+
+def warp_beacon_command(brain, cmd, args):
+    parser.parse([], args)
+    mobile = brain.mobile
+    beacon = entity.Entity()
+    beacon.celestial = mobile.celestial
+    beacon.position = mobile.position
+    pantsmud.game.environment.add_entity(beacon)
     message.command_success(mobile, cmd)
 
 
@@ -58,6 +69,7 @@ def clear_warp_scanner(_, mobile):
 def init():
     auxiliary.install(aux_types.AUX_TYPE_ENTITY, "warp", WarpAux)
     command.add_command("warp", warp_command)
+    command.add_command("warp.beacon", warp_beacon_command)
     command.add_command("warp.scan", warp_scan_command)
     command.add_command("warp.scan.activate", warp_scan_activate_command)
     hook.add("celestial.exit", clear_warp_scanner)

@@ -82,3 +82,20 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("command.success", response2["message"])
         self.assertEqual("warp.scan", response2["data"]["command"])
         self.assertEqual(set(["Sol", "Earth"]), set(response2["data"]["result"]["celestial_names"]))
+
+    def test_warp_beacon(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_beacon")
+        client.send("warp.beacon\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("warp.beacon", response["data"]["command"])
+
+    def test_warp_beacon_with_parameters_returns_error(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_beacon_with_parameters")
+        client.send("warp.beacon one\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.error", response["message"])
+        self.assertEqual("warp.beacon", response["data"]["command"])
+        # TODO Verify error message

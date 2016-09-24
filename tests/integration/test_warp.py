@@ -1,16 +1,8 @@
 import json
-from tests.integration.util import IntegrationTestCase
+from tests.integration.util import IntegrationTestCase, StatefulIntegrationTestCase
 
 
 class WarpIntegrationTestCase(IntegrationTestCase):
-    def test_warp_beacon(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_warp_beacon")
-        client.send("warp.beacon\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.success", response["message"])
-        self.assertEqual("warp.beacon", response["data"]["command"])
-
     def test_warp_beacon_with_parameters_returns_error(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_beacon_with_parameters")
@@ -20,29 +12,56 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("warp.beacon", response["data"]["command"])
         # TODO Verify error message
 
-    def test_warp_to_beacon_before_active_scan(self):
-        beacon_uuid = self._place_beacon_at_earth("test_warp_to_beacon_before_active_scan_setup")
-
+    def test_warp_scan_with_no_beacons_before_active_scan(self):
         client = self.get_client()
-        self.register_and_login(client, "test_warp_to_beacon_before_active_scan")
-        client.send("warp %s\r\n" % beacon_uuid)
+        self.register_and_login(client, "test_warp_scan_with_no_beacons_before_active_scan")
+        client.send("warp.scan\r\n")
         response = json.loads(client.recv(4096))
         self.assertEqual("command.success", response["message"])
-        self.assertEqual("warp", response["data"]["command"])
+        self.assertEqual("warp.scan", response["data"]["command"])
+        self.assertEqual({}, response["data"]["result"]["beacons"])
+        self.assertEqual({}, response["data"]["result"]["celestials"])
 
-    def test_warp_to_beacon_after_active_scan(self):
-        beacon_uuid = self._place_beacon_at_earth("test_warp_to_beacon_after_active_scan_setup")
-
+    def test_warp_scan_with_no_beacons_after_active_scan(self):
         client = self.get_client()
-        self.register_and_login(client, "test_warp_to_beacon_after_active_scan")
+        self.register_and_login(client, "test_warp_scan_with_no_beacons_after_active_scan")
         client.send("warp.scan.activate\r\n")
         response1 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response1["message"])
         self.assertEqual("warp.scan.activate", response1["data"]["command"])
-        client.send("warp %s\r\n" % beacon_uuid)
+        client.send("warp.scan\r\n")
         response2 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response2["message"])
-        self.assertEqual("warp", response2["data"]["command"])
+        self.assertEqual("warp.scan", response2["data"]["command"])
+        self.assertEqual({}, response2["data"]["result"]["beacons"])
+        self.assertEqual({"Earth": "f5102606-bacc-4055-8e64-600efb874985"}, response2["data"]["result"]["celestials"])
+
+    def test_warp_scan_with_parameters_returns_error(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_with_parameters")
+        client.send("warp.scan one\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.error", response["message"])
+        self.assertEqual("warp.scan", response["data"]["command"])
+        # TODO Verify error message
+
+    def test_warp_scan_activate(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_activate")
+        client.send("warp.scan.activate\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("warp.scan.activate", response["data"]["command"])
+        self.assertEqual({"Earth": "f5102606-bacc-4055-8e64-600efb874985"}, response["data"]["result"]["celestials"])
+
+    def test_warp_scan_activate_with_parameters_returns_error(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_activate_with_parameters")
+        client.send("warp.scan.activate one\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.error", response["message"])
+        self.assertEqual("warp.scan.activate", response["data"]["command"])
+        # TODO Verify error message
 
     def test_warp_to_celestial_before_active_scan_returns_failure(self):
         client = self.get_client()
@@ -112,6 +131,68 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("command.error", response["message"])
         self.assertEqual("warp", response["data"]["command"])
         # TODO Verify error message
+
+
+class WarpStatefulIntegrationTestCase(StatefulIntegrationTestCase):
+    def test_warp_beacon(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_beacon")
+        client.send("warp.beacon\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("warp.beacon", response["data"]["command"])
+
+    def test_warp_scan_with_beacons_before_active_scan(self):
+        beacon_uuid = self._place_beacon_at_earth("test_warp_scan_with_beacons_before_active_scan_setup")
+
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_with_beacons_before_active_scan")
+        client.send("warp.scan\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("warp.scan", response["data"]["command"])
+        self.assertEqual({"": beacon_uuid}, response["data"]["result"]["beacons"])
+        self.assertEqual({}, response["data"]["result"]["celestials"])
+
+    def test_warp_scan_with_beacons_after_active_scan(self):
+        beacon_uuid = self._place_beacon_at_earth("test_warp_scan_with_beacons_after_active_scan_setup")
+
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_with_beacons_after_active_scan")
+        client.send("warp.scan.activate\r\n")
+        response1 = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response1["message"])
+        self.assertEqual("warp.scan.activate", response1["data"]["command"])
+        client.send("warp.scan\r\n")
+        response2 = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response2["message"])
+        self.assertEqual("warp.scan", response2["data"]["command"])
+        self.assertEqual({"": beacon_uuid}, response2["data"]["result"]["beacons"])
+        self.assertEqual({"Earth": "f5102606-bacc-4055-8e64-600efb874985"}, response2["data"]["result"]["celestials"])
+
+    def test_warp_to_beacon_before_active_scan(self):
+        beacon_uuid = self._place_beacon_at_earth("test_warp_to_beacon_before_active_scan_setup")
+
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_to_beacon_before_active_scan")
+        client.send("warp %s\r\n" % beacon_uuid)
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("warp", response["data"]["command"])
+
+    def test_warp_to_beacon_after_active_scan(self):
+        beacon_uuid = self._place_beacon_at_earth("test_warp_to_beacon_after_active_scan_setup")
+
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_to_beacon_after_active_scan")
+        client.send("warp.scan.activate\r\n")
+        response1 = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response1["message"])
+        self.assertEqual("warp.scan.activate", response1["data"]["command"])
+        client.send("warp %s\r\n" % beacon_uuid)
+        response2 = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response2["message"])
+        self.assertEqual("warp", response2["data"]["command"])
 
     def _place_beacon_at_earth(self, username):
         client = self.get_client()

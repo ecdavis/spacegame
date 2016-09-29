@@ -1,8 +1,8 @@
 import unittest
-from tests.unit.test_placeholder import PlaceholderTestCase
+from tests.unit.test_universe import UniverseUnitTestCase
 
 
 def get_unit_tests():
     return unittest.TestSuite([
-        unittest.TestLoader().loadTestsFromTestCase(PlaceholderTestCase)
+        unittest.TestLoader().loadTestsFromTestCase(UniverseUnitTestCase)
     ])

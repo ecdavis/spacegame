@@ -67,15 +67,6 @@ class Universe(object):
         del self.brains[brain.uuid]
         brain.environment = None
 
-    def get_identity(self, identity_name):
-        """
-        Get an Identity by name.
-        """
-        for identity in self.identities.itervalues():
-            if identity.name == identity_name:
-                return identity
-        return None
-
     def add_identity(self, identity):
         """
         Add an Identity to the Universe.
@@ -155,17 +146,6 @@ class Universe(object):
         """
         star_system.universe = self
         self.star_systems[star_system.uuid] = star_system
-
-    def get_celestial(self, celestial_name, star_system=None):
-        """
-        Get a Celestial by name, optionally filter by StarSystem.
-        """
-        for celestial in self.celestials.itervalues():
-            if star_system and celestial.star_system is not star_system:
-                continue
-            if celestial.name == celestial_name:
-                return celestial
-        return None
 
     def get_celestials(self, star_systems=None, uuids=None):
         """

@@ -23,10 +23,7 @@ def check_and_create_directories():
             os.makedirs(directory)
 
 
-def check_and_create_universe():
-    if os.path.exists(config.path.universe_file):
-        logging.debug("Universe exists, skipping creation.")
-        return
+def create_universe():
     u = universe.Universe()
     s1 = star_system.StarSystem()
     s1.name = "The Solar System"
@@ -49,6 +46,14 @@ def check_and_create_universe():
     u.add_celestial(c2)
     c2.star_system = s2
     s2.core_celestial_uuids.add(c2.uuid)
+    return u
+
+
+def check_and_create_universe():
+    if os.path.exists(config.path.universe_file):
+        logging.debug("Universe exists, skipping creation.")
+        return
+    u = create_universe()
     save_universe(u)
 
 

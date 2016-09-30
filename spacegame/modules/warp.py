@@ -1,3 +1,4 @@
+import random
 import pantsmud.game
 from pantsmud.driver import auxiliary, command, hook, parser
 from pantsmud.util import error, message
@@ -19,13 +20,14 @@ class WarpAux(object):
 def warp_command(brain, cmd, args):
     params = parser.parse([("destination_uuid", parser.UUID)], args)
     mobile = brain.mobile
-    destination = _find_warp_destination(mobile, params["destination_uuid"])
-    if destination is None:
+    destination, position = _find_warp_destination(mobile, params["destination_uuid"])
+    if destination is None or position is None:
         raise error.CommandFail("no destination")
     elif destination is mobile.celestial:
         raise error.CommandFail("destination is current celestial")
     hook.run(hook_types.CELESTIAL_EXIT, mobile)
     mobile.celestial = destination
+    mobile.position = position
     message.command_success(mobile, cmd)
 
 
@@ -33,12 +35,21 @@ def _find_warp_destination(mobile, destination_uuid):
     beacons = mobile.star_system.get_entities(is_warp_beacon=True)
     for beacon in beacons:
         if beacon.uuid == destination_uuid:
-            return beacon.celestial
+            return beacon.celestial, _random_position_around(beacon.position)
     celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
     for celestial in celestials:
         if celestial.uuid == destination_uuid:
-            return celestial
-    return None
+            return celestial, _random_position_around((0, 0, 0))
+    return None, None
+
+
+def _random_position_around(position):
+    add = (random.randint(-10, 10), random.randint(-10, 10), random.randint(-10, 10))
+    return (
+        position[0] + add[0],
+        position[1] + add[1],
+        position[2] + add[2]
+    )
 
 
 def warp_beacon_command(brain, cmd, args):

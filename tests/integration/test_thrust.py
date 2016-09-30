@@ -67,6 +67,15 @@ class ThrustIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("thrust.speed", response["data"]["command"])
         # TODO Verify error message
 
+    def test_thrust_vector(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_thrust_vector")
+        client.send("thrust.vector 0.0 1.0 0.0\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("thrust.vector", response["data"]["command"])
+        # TODO Verify success.
+
     def test_thrust_vector_with_vector_sum_greater_than_one_returns_failure(self):
         client = self.get_client()
         self.register_and_login(client, "test_thrust_vector_with_vector_sum_greater_than_one")

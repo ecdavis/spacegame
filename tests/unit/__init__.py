@@ -9,12 +9,12 @@ from tests.unit.test_universe import UniverseUnitTestCase
 
 
 def get_unit_tests():
-    return unittest.TestSuite([
-        unittest.TestLoader().loadTestsFromTestCase(ApplicationUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(CelestialUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(EntityUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(MobileUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(PathConfigUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(StarSystemUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(UniverseUnitTestCase)
-    ])
+    return unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromTestCase(tc) for tc in (
+        ApplicationUnitTestCase,
+        CelestialUnitTestCase,
+        EntityUnitTestCase,
+        MobileUnitTestCase,
+        PathConfigUnitTestCase,
+        StarSystemUnitTestCase,
+        UniverseUnitTestCase
+    )])

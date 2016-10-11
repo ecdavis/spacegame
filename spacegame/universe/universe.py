@@ -1,6 +1,5 @@
 import uuid
 from pantsmud.driver import auxiliary
-from spacegame.universe import mobile
 
 
 class Universe(object):
@@ -119,7 +118,7 @@ class Universe(object):
 
     def get_mobiles(self):
         mobiles = self.entities.values()
-        mobiles = filter(lambda e: isinstance(e, mobile.Mobile), mobiles)  # TODO Make it a flag
+        mobiles = filter(lambda e: e.brain is not None, mobiles)  # TODO Make it a flag
         return mobiles
 
     def get_star_system(self, star_system_name):

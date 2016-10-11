@@ -3,7 +3,7 @@ import os.path
 import uuid
 from pantsmud.util import convert, storage
 from spacegame import config
-from spacegame.universe import mobile
+from spacegame.universe import entity
 
 
 class User(object):
@@ -78,7 +78,7 @@ def save_user(user):
 
 def player_name_exists(player_name):
     for filename in os.listdir(config.path.player_dir):
-        p = storage.load_file(os.path.join(config.path.player_dir, filename), mobile.Mobile)
+        p = storage.load_file(os.path.join(config.path.player_dir, filename), entity.Entity)
         if p.name == player_name:
             return True
     return False
@@ -89,7 +89,7 @@ def player_exists(player_uuid):
 
 
 def load_player(player_uuid):
-    return storage.load_file(config.path.player_file_pattern % convert.uuid_to_base32(player_uuid), mobile.Mobile)
+    return storage.load_file(config.path.player_file_pattern % convert.uuid_to_base32(player_uuid), entity.Entity)
 
 
 def save_player(player):

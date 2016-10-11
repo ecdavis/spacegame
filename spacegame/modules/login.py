@@ -4,7 +4,7 @@ import pantsmud.game
 from pantsmud.driver import command, parser
 from pantsmud.util import error, message
 from spacegame.core import login_manager, user
-from spacegame.universe import mobile
+from spacegame.universe import entity
 
 
 def register_command(brain, cmd, args):
@@ -13,7 +13,7 @@ def register_command(brain, cmd, args):
         raise error.CommandFail()  # TODO Add error message.
     u = user.User()
     u.name = params["name"]
-    p = mobile.Mobile()
+    p = entity.new_mobile()
     p.name = params["name"]
     star_system = random.choice(list(pantsmud.game.environment.core_star_systems))
     p.celestial = random.choice(list(star_system.core_celestials))

@@ -11,7 +11,7 @@ def get_unit_tests():
     return unittest.TestSuite([
         unittest.TestLoader().loadTestsFromTestCase(ApplicationUnitTestCase),
         unittest.TestLoader().loadTestsFromTestCase(CelestialUnitTestCase),
-        unittest.TestLoader().loadTestsFromTestCase(EntityUnitTestCase)
+        unittest.TestLoader().loadTestsFromTestCase(EntityUnitTestCase),
         unittest.TestLoader().loadTestsFromTestCase(MobileUnitTestCase),
         unittest.TestLoader().loadTestsFromTestCase(PathConfigUnitTestCase),
         unittest.TestLoader().loadTestsFromTestCase(UniverseUnitTestCase)

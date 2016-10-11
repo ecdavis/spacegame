@@ -73,7 +73,7 @@ class StarSystem(object):
         If the StarSystem was previously set to never reset, it will now begin to reset as expected. If the current
         reset timer is greater than the new interval, it will be set to the new interval.
         """
-        if self.reset_interval < 0 or self.reset_timer > interval:
+        if self.reset_interval < 0 or self.reset_timer > interval or self.reset_timer < 1:
             self.reset_timer = interval
         self._reset_interval = interval
 
@@ -103,8 +103,9 @@ class StarSystem(object):
         When the reset timer reaches zero, the StarSystem will be reset and the reset timer will be set back to the
         reset interval value.
         """
-        self.reset_timer -= 1
-        if self.reset_timer == 0:  #
+        if self.reset_timer > -1:
+            self.reset_timer -= 1
+        if self.reset_timer == 0:
             self.reset_timer = self.reset_interval
             hook.run(hook.HOOK_RESET_ZONE, self)
 

@@ -7,7 +7,7 @@ class Entity(object):
     """
     A representation of an entity in the game universe.
     """
-    def __init__(self, is_warp_beacon=False):
+    def __init__(self, is_pilotable=False, is_warp_beacon=False):
         self.uuid = uuid.uuid4()
         self.name = ""
         self.universe = None
@@ -16,6 +16,7 @@ class Entity(object):
         self.position = (0, 0, 0)
         self.vector = (1.0, 0.0, 0.0)
         self.speed = 0
+        self.is_pilotable = is_pilotable
         self.is_warp_beacon = is_warp_beacon
         self.aux = auxiliary.new_data(aux_types.AUX_TYPE_ENTITY)
 
@@ -144,4 +145,4 @@ class Entity(object):
 
 
 def new_mobile():
-    return Entity()
+    return Entity(is_pilotable=True)

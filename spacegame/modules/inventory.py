@@ -32,6 +32,16 @@ def inventory_command(brain, cmd, args):
     message.command_success(mobile, cmd, {"inventory": inventory_data})
 
 
+def test_add_active_warp_scanner_command(brain, cmd, args):
+    parser.parse([], args)
+    mobile = brain.mobile
+    i = item.Item()
+    i.name = "Active Warp Scanner"
+    mobile.aux["inventory"].inventory.append(i)
+    pantsmud.game.environment.add_item(i)
+    message.command_success(mobile, cmd)
+
+
 def clear_inventory_hook(_, mobile):
     for i in mobile.aux["inventory"].inventory:
         pantsmud.game.environment.remove_item(i)
@@ -40,4 +50,5 @@ def clear_inventory_hook(_, mobile):
 def init():
     auxiliary.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
     command.add_command("inventory", inventory_command)
+    command.add_command("test.add_active_warp_scanner", test_add_active_warp_scanner_command)
     hook.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)

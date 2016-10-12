@@ -2,6 +2,7 @@ import unittest
 from tests.integration.test_chat import ChatIntegrationTestCase
 from tests.integration.test_echo import EchoIntegrationTestCase, ShutdownIntegrationTestCase
 from tests.integration.test_info import InfoIntegrationTestCase
+from tests.integration.test_inventory import InventoryIntegrationTestCase
 from tests.integration.test_jump import JumpIntegrationTestCase
 from tests.integration.test_login import LoginIntegrationTestCase
 from tests.integration.test_thrust import ThrustIntegrationTestCase
@@ -14,6 +15,7 @@ def get_integration_tests():
         ChatIntegrationTestCase,
         EchoIntegrationTestCase,
         InfoIntegrationTestCase,
+        InventoryIntegrationTestCase,
         JumpIntegrationTestCase,
         LoginIntegrationTestCase,
         ThrustIntegrationTestCase,

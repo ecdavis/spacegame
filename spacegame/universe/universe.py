@@ -14,6 +14,7 @@ class Universe(object):
         self.brains = {}
         self.identities = {}
         self.entities = {}
+        self.items = {}
         self.star_systems = {}
         self.celestials = {}
         self.core_star_system_uuids = set()
@@ -115,6 +116,20 @@ class Universe(object):
         """
         del self.entities[entity.uuid]
         entity.universe = None
+
+    def add_item(self, item):
+        """
+        Add an Item to the Universe.
+        """
+        item.universe = self
+        self.items[item.uuid] = item
+
+    def remove_item(self, item):
+        """
+        Remove an Item from the Universe.
+        """
+        del self.items[item.uuid]
+        item.universe = None
 
     def get_mobiles(self):
         mobiles = self.entities.values()

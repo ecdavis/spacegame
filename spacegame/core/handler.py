@@ -1,7 +1,7 @@
 import logging
 import pantsmud.game
 from pantsmud.driver import hook
-from spacegame.core import login_manager
+from spacegame.core import hook_types, login_manager
 
 
 def open_brain_hook(_, brain):
@@ -17,6 +17,7 @@ def close_brain_hook(_, brain):
         mobile.detach_brain()
         if pantsmud.game.environment:
             pantsmud.game.environment.remove_entity(mobile)
+            hook.run(hook_types.REMOVE_MOBILE, mobile)
     if brain.identity:
         identity = brain.identity
         identity.detach_brain()

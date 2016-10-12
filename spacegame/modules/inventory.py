@@ -1,6 +1,7 @@
-from pantsmud.driver import auxiliary, command, parser
+import pantsmud
+from pantsmud.driver import auxiliary, command, hook, parser
 from pantsmud.util import message
-from spacegame.core import aux_types
+from spacegame.core import aux_types, hook_types
 from spacegame.universe import item
 
 
@@ -14,6 +15,7 @@ class InventoryAux(object):
             inv_item = item.Item()
             inv_item.load_data(item_data)
             inv_items.append(inv_item)
+            pantsmud.game.environment.add_item(inv_item)
         self.inventory = inv_items
 
     def save_data(self):
@@ -30,6 +32,12 @@ def inventory_command(brain, cmd, args):
     message.command_success(mobile, cmd, {"inventory": inventory_data})
 
 
+def clear_inventory_hook(_, mobile):
+    for i in mobile.aux["inventory"].inventory:
+        pantsmud.game.environment.remove_item(i)
+
+
 def init():
     auxiliary.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
     command.add_command("inventory", inventory_command)
+    hook.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)

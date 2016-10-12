@@ -32,12 +32,15 @@ class Entity(object):
                 "uuid": "<uuid>",
                 "name": "<word>",
                 "celestial_uuid": "<uuid>",
+                "is_pilotable": <bool>,
+                "is_warp_beacon": <bool>,
                 "auxiliary": <dict>  # This will be passed to pantsmud.auxiliary.load_data
             }
         """
         self.uuid = uuid.UUID(data["uuid"])
         self.name = data["name"]
         self.celestial_uuid = uuid.UUID(data["celestial_uuid"])  # TODO This isn't safe if the Celestial no longer exists.
+        self.is_pilotable = data["is_pilotable"]
         self.is_warp_beacon = data["is_warp_beacon"]
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
@@ -49,6 +52,7 @@ class Entity(object):
             "uuid": str(self.uuid),
             "name": self.name,
             "celestial_uuid": str(self.celestial_uuid),
+            "is_pilotable": self.is_pilotable,
             "is_warp_beacon": self.is_warp_beacon,
             "auxiliary": auxiliary.save_data(self.aux)
         }

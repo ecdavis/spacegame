@@ -7,9 +7,15 @@ from spacegame.universe import item
 
 class InventoryAux(object):
     def __init__(self):
+        self.fitted = None
         self.inventory = []
 
     def load_data(self, data):
+        if data["fitted"]:
+            fitted_item = item.Item()
+            fitted_item.load_data(data["fitted"])
+            pantsmud.game.environment.add_item(fitted_item)
+            self.fitted = fitted_item
         inv_items = []
         for item_data in data["inventory"]:
             inv_item = item.Item()
@@ -20,6 +26,7 @@ class InventoryAux(object):
 
     def save_data(self):
         return {
+            "fitted": self.fitted.save_data() if self.fitted else None,
             "inventory": [inv_item.save_data() for inv_item in self.inventory]
         }
 
@@ -27,9 +34,12 @@ class InventoryAux(object):
 def inventory_command(brain, cmd, args):
     parser.parse([], args)
     mobile = brain.mobile
+    fitted_data = mobile.aux["inventory"].fitted
+    if fitted_data:
+        fitted_data = {fitted_data.name: str(fitted_data.uuid)}
     inventory = mobile.aux["inventory"].inventory
     inventory_data = {i.name: str(i.uuid) for i in inventory}
-    message.command_success(mobile, cmd, {"inventory": inventory_data})
+    message.command_success(mobile, cmd, {"fitted": fitted_data, "inventory": inventory_data})
 
 
 def test_add_active_warp_scanner_command(brain, cmd, args):
@@ -43,6 +53,8 @@ def test_add_active_warp_scanner_command(brain, cmd, args):
 
 
 def clear_inventory_hook(_, mobile):
+    if mobile.aux["inventory"].fitted is not None:
+        pantsmud.game.environment.remove_item(mobile.aux["inventory"].fitted)
     for i in mobile.aux["inventory"].inventory:
         pantsmud.game.environment.remove_item(i)
 

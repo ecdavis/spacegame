@@ -10,6 +10,7 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
         response = json.loads(client.recv(4096))
         self.assertEqual("command.success", response["message"])
         self.assertEqual("inventory", response["data"]["command"])
+        self.assertIsNone(response["data"]["result"]["fitted"])
         self.assertEqual({}, response["data"]["result"]["inventory"])
 
     def test_inventory_one_item(self):
@@ -23,6 +24,7 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
         response2 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response2["message"])
         self.assertEqual("inventory", response2["data"]["command"])
+        self.assertIsNone(response2["data"]["result"]["fitted"])
         self.assertEqual(1, len(response2["data"]["result"]["inventory"]))
 
     def test_inventory_with_parameters_returns_error(self):

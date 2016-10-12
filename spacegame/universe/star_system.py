@@ -1,5 +1,6 @@
 import uuid
 from pantsmud.driver import auxiliary, hook
+from spacegame.core import aux_types
 
 
 class StarSystem(object):
@@ -13,7 +14,7 @@ class StarSystem(object):
         self.core_celestial_uuids = set()
         self._reset_interval = -1
         self.reset_timer = -1
-        self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_ZONE)
+        self.aux = auxiliary.new_data(aux_types.AUX_TYPE_STAR_SYSTEM)
 
     def load_data(self, data):
         """

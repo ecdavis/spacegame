@@ -1,2 +1,5 @@
+AUX_TYPE_CELESTIAL = "aux.celestial"
 AUX_TYPE_ENTITY = "aux.entity"
 AUX_TYPE_ITEM = "aux.item"
+AUX_TYPE_STAR_SYSTEM = "aux.star_system"
+AUX_TYPE_UNIVERSE = "aux.universe"

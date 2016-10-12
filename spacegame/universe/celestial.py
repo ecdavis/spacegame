@@ -1,5 +1,6 @@
 import uuid
 from pantsmud.driver import auxiliary
+from spacegame.core import aux_types
 
 
 class Celestial(object):
@@ -11,7 +12,7 @@ class Celestial(object):
         self.universe = None
         self.name = ""
         self.star_system_uuid = None
-        self.aux = auxiliary.new_data(auxiliary.AUX_TYPE_NODE)
+        self.aux = auxiliary.new_data(aux_types.AUX_TYPE_CELESTIAL)
 
     def load_data(self, data):
         """

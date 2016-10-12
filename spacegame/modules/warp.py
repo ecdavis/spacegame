@@ -93,5 +93,5 @@ def init():
     command.add_command("warp.beacon", warp_beacon_command)
     command.add_command("warp.scan", warp_scan_command)
     command.add_command("warp.scan.activate", warp_scan_activate_command)
-    hook.add("celestial.exit", clear_warp_scanner)
-    hook.add("star_system.exit", clear_warp_scanner)
+    hook.add(hook_types.CELESTIAL_EXIT, clear_warp_scanner)
+    hook.add(hook_types.STAR_SYSTEM_EXIT, clear_warp_scanner)

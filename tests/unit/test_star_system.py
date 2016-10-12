@@ -1,5 +1,6 @@
 import mock
 from pantsmud.driver import hook
+from spacegame.core import hook_types
 from spacegame.universe.star_system import StarSystem
 from tests.unit.util import UnitTestCase
 
@@ -7,9 +8,9 @@ from tests.unit.util import UnitTestCase
 class StarSystemUnitTestCase(UnitTestCase):
     def setUp(self):
         UnitTestCase.setUp(self)
-        self.hook_reset_zone_func = mock.MagicMock()
-        self.hook_reset_zone_func.__name__ = 'hook_reset_zone_func'
-        hook.add(hook.HOOK_RESET_ZONE, self.hook_reset_zone_func)
+        self.hook_star_system_reset = mock.MagicMock()
+        self.hook_star_system_reset.__name__ = 'hook_star_system_reset'
+        hook.add(hook_types.STAR_SYSTEM_RESET, self.hook_star_system_reset)
         self.star_system = StarSystem()
         self.star_system.reset_interval = 10
 
@@ -39,29 +40,29 @@ class StarSystemUnitTestCase(UnitTestCase):
         self.star_system.force_reset()
         self.assertEqual(self.star_system.reset_timer, self.star_system.reset_interval)
 
-    def test_force_reset_calls_hook_reset_zone(self):
+    def test_force_reset_calls_hook_star_system_reset(self):
         self.star_system.force_reset()
-        self.hook_reset_zone_func.assert_called()
+        self.hook_star_system_reset.assert_called()
 
-    def test_force_reset_with_negative_reset_interval_calls_hook_reset_zone(self):
+    def test_force_reset_with_negative_reset_interval_calls_hook_star_system_reset(self):
         self.star_system.reset_interval = -1
         self.star_system.force_reset()
-        self.hook_reset_zone_func.assert_called()
+        self.hook_star_system_reset.assert_called()
 
-    def test_pulse_with_reset_timer_above_one_does_not_call_hook_reset_zone(self):
+    def test_pulse_with_reset_timer_above_one_does_not_call_hook_star_system_reset(self):
         self.star_system.reset_timer = 2
         self.star_system.pulse()
-        self.hook_reset_zone_func.assert_not_called()
+        self.hook_star_system_reset.assert_not_called()
 
-    def test_pulse_with_reset_timer_at_one_calls_hook_reset_zone(self):
+    def test_pulse_with_reset_timer_at_one_calls_hook_star_system_reset(self):
         self.star_system.reset_timer = 1
         self.star_system.pulse()
-        self.hook_reset_zone_func.assert_called()
+        self.hook_star_system_reset.assert_called()
 
-    def test_pulse_with_reset_timer_below_one_does_not_call_hook_reset_zone(self):
+    def test_pulse_with_reset_timer_below_one_does_not_call_hook_star_system_reset(self):
         self.star_system.reset_timer = 0
         self.star_system.pulse()
-        self.hook_reset_zone_func.assert_not_called()
+        self.hook_star_system_reset.assert_not_called()
 
     def test_pulse_with_reset_timer_above_one_decrements_reset_timer(self):
         self.star_system.reset_timer = 2

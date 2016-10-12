@@ -1,6 +1,6 @@
 import uuid
 from pantsmud.driver import auxiliary, hook
-from spacegame.core import aux_types
+from spacegame.core import aux_types, hook_types
 
 
 class StarSystem(object):
@@ -108,7 +108,7 @@ class StarSystem(object):
             self.reset_timer -= 1
         if self.reset_timer == 0:
             self.reset_timer = self.reset_interval
-            hook.run(hook.HOOK_RESET_ZONE, self)
+            hook.run(hook_types.STAR_SYSTEM_RESET, self)
 
     def force_reset(self):
         """

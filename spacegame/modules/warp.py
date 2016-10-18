@@ -23,8 +23,6 @@ def warp_command(brain, cmd, args):
     destination, position = _find_warp_destination(mobile, params["destination_uuid"])
     if destination is None or position is None:
         raise error.CommandFail("no destination")
-    elif destination is mobile.celestial:
-        raise error.CommandFail("destination is current celestial")
     hook.run(hook_types.CELESTIAL_EXIT, mobile)
     mobile.celestial = destination
     mobile.position = position

@@ -11,6 +11,8 @@ def echo_command(brain, cmd, args):
 
 def quit_command(brain, _, args):
     parser.parse([], args)
+    if brain.mobile and brain.identity:
+        user.save_player(brain.mobile)
     brain.close()
 
 

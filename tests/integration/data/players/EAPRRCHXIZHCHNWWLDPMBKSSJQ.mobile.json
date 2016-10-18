@@ -1,0 +1,18 @@
+{
+  "is_warp_beacon": false,
+  "is_pilotable": true,
+  "auxiliary": {
+    "inventory": {
+      "inventory": [], 
+      "fitted": {
+        "auxiliary": {}, 
+        "uuid": "3d595a4e-b202-45ff-a390-3244a4ef1beb", 
+        "name": "Active Warp Scanner"
+      }
+    }, 
+    "warp": {}
+  }, 
+  "uuid": "201f1888-f746-4e23-b6d6-58dec0aa524c", 
+  "celestial_uuid": "f555a48a-8f19-4c97-8cb7-1884715de582", 
+  "name": "test_login"
+}

@@ -48,7 +48,7 @@ class LoginIntegrationTestCase(IntegrationTestCase):
         response = json.loads(client.recv(4096))
         self.assertEqual("command.success", response["message"])
         self.assertEqual("login", response["data"]["command"])
-        self.assertEqual("test_login", response["data"]["result"]["name"])
+        self.assertEqual("test_user", response["data"]["result"]["name"])
 
     def test_register_and_login(self):
         client = self.get_client()

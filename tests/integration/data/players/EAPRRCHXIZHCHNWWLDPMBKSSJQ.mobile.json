@@ -3,7 +3,13 @@
   "is_pilotable": true,
   "auxiliary": {
     "inventory": {
-      "inventory": [], 
+      "inventory": [
+        {
+          "auxiliary": {},
+          "uuid": "40730941-f45a-4d7d-b7fb-c4cc7e9ebb28",
+          "name": "Active Warp Scanner"
+        }
+      ], 
       "fitted": {
         "auxiliary": {}, 
         "uuid": "3d595a4e-b202-45ff-a390-3244a4ef1beb", 

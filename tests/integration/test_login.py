@@ -44,7 +44,15 @@ class LoginIntegrationTestCase(IntegrationTestCase):
 
     def test_login(self):
         client = self.get_client()
-        username = "test_login"
+        client.send("login 1500b58c-55df-40ec-aecd-a60436aaa1ac\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response["message"])
+        self.assertEqual("login", response["data"]["command"])
+        self.assertEqual("test_user", response["data"]["result"]["name"])
+
+    def test_register_and_login(self):
+        client = self.get_client()
+        username = "test_register_and_login"
         client.send("register %s\r\n" % username)
         register_response = json.loads(client.recv(4096))
         uuid = register_response["data"]["result"]["uuid"]
@@ -54,6 +62,13 @@ class LoginIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("command.success", login_response["message"])
         self.assertEqual("login", login_response["data"]["command"])
         self.assertEqual(username, login_response["data"]["result"]["name"])
+
+    def test_login_with_non_existent_player_returns_failure(self):
+        client = self.get_client()
+        client.send("login e4898f67-a2b3-48cc-b0c0-d2ae4a71fdac\r\n")
+        response = json.loads(client.recv(4096))
+        self.assertEqual("command.fail", response["message"])
+        self.assertEqual("login", response["data"]["command"])
 
     def test_login_with_non_existent_uuid_returns_failure(self):
         client = self.get_client()

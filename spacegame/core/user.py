@@ -7,11 +7,8 @@ from spacegame.universe import entity
 
 
 class User(object):
-    def __init__(self, user_uuid=None):
-        if user_uuid:
-            self.uuid = user_uuid
-        else:
-            self.uuid = uuid.uuid4()
+    def __init__(self):
+        self.uuid = uuid.uuid4()
         self.name = ""
         self.universe = None
         self.brain_uuid = None

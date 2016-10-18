@@ -16,7 +16,19 @@ class EchoIntegrationTestCase(IntegrationTestCase):
 
     def test_quit(self):
         client = self.get_client()
-        self.register_and_login(client, "test_quit")
+        client.send("login 1500b58c-55df-40ec-aecd-a60436aaa1ac\r\n")
+        response1 = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response1["message"])
+        self.assertEqual("login", response1["data"]["command"])
+        self.assertEqual("test_user", response1["data"]["result"]["name"])
+
+        client.send("quit\r\n")
+        response2 = client.recv(4096)
+        self.assertEqual('', response2)
+
+    def test_register_and_quit(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_register_and_quit")
         client.send("quit\r\n")
         response = client.recv(4096)
         self.assertEqual('', response)

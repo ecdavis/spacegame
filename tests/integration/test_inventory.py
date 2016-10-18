@@ -48,6 +48,11 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
         response2 = json.loads(client.recv(4096))
         self.assertEqual("command.success", response2["message"])
         self.assertEqual("fit", response2["data"]["command"])
+        client.send("inventory\r\n")
+        response3 = json.loads(client.recv(4096))
+        self.assertEqual("command.success", response3["message"])
+        self.assertEqual("inventory", response3["data"]["command"])
+        self.assertEqual(fittable_item_uuid, response3["data"]["result"]["fitted"].values()[0])
 
     def test_fit_with_already_fitted_item_returns_failure(self):
         client = self.get_client()

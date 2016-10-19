@@ -30,7 +30,7 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
     def test_inventory_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_inventory_validate_parameters")
-        self.validate_parameters(client, "inventory", num_parameters=0)
+        self.validate_num_parameters(client, "inventory", num_parameters=0)
 
     def test_fit(self):
         client = self.get_client()
@@ -86,7 +86,7 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
     def test_fit_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_fit_validate_parameters")
-        self.validate_parameters(client, "fit", num_parameters=1)
+        self.validate_num_parameters(client, "fit", num_parameters=1)
 
     def test_unfit(self):
         client = self.get_client()
@@ -118,4 +118,4 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
     def test_unfit_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_unfit_validate_parameters")
-        self.validate_parameters(client, "unfit", num_parameters=0)
+        self.validate_num_parameters(client, "unfit", num_parameters=0)

@@ -52,7 +52,7 @@ class ThrustIntegrationTestCase(IntegrationTestCase):
     def test_thrust_speed_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_thrust_speed_validate_parameters")
-        self.validate_parameters(client, "thrust.speed", num_parameters=1)
+        self.validate_num_parameters(client, "thrust.speed", num_parameters=1)
 
     def test_thrust_vector(self):
         client = self.get_client()
@@ -141,4 +141,4 @@ class ThrustIntegrationTestCase(IntegrationTestCase):
     def test_thrust_vector_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_thrust_vector_validate_parameters")
-        self.validate_parameters(client, "thrust.vector", num_parameters=3)
+        self.validate_num_parameters(client, "thrust.vector", num_parameters=3)

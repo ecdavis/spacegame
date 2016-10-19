@@ -36,12 +36,12 @@ class EchoIntegrationTestCase(IntegrationTestCase):
     def test_quit_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_quit_validate_parameters")
-        self.validate_parameters(client, "quit", num_parameters=0)
+        self.validate_num_parameters(client, "quit", num_parameters=0)
 
     def test_shutdown_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_shutdown_validate_parameters")
-        self.validate_parameters(client, "shutdown", num_parameters=0)
+        self.validate_num_parameters(client, "shutdown", num_parameters=0)
 
 
 class ShutdownIntegrationTestCase(IntegrationTestCase):

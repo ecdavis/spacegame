@@ -99,22 +99,22 @@ class WarpIntegrationTestCase(IntegrationTestCase):
     def test_warp_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_validate_parameters")
-        self.validate_parameters(client, "warp", num_parameters=1)
+        self.validate_num_parameters(client, "warp", num_parameters=1)
 
     def test_warp_beacon_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_beacon_validate_parameters")
-        self.validate_parameters(client, "warp.beacon", num_parameters=0)
+        self.validate_num_parameters(client, "warp.beacon", num_parameters=0)
 
     def test_warp_scan_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_scan_validate_parameters")
-        self.validate_parameters(client, "warp.scan", num_parameters=0)
+        self.validate_num_parameters(client, "warp.scan", num_parameters=0)
 
     def test_warp_scan_activate_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_scan_activate_validate_parameters")
-        self.validate_parameters(client, "warp.scan.activate", num_parameters=0)
+        self.validate_num_parameters(client, "warp.scan.activate", num_parameters=0)
 
 
 class WarpStatefulIntegrationTestCase(StatefulIntegrationTestCase):

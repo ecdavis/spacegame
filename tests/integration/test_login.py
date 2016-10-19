@@ -28,7 +28,7 @@ class LoginIntegrationTestCase(IntegrationTestCase):
 
     def test_register_validate_parameters(self):
         client = self.get_client()
-        self.validate_parameters(client, "register", num_parameters=1)
+        self.validate_num_parameters(client, "register", num_parameters=1)
 
     def test_login(self):
         client = self.get_client()
@@ -68,7 +68,7 @@ class LoginIntegrationTestCase(IntegrationTestCase):
 
     def test_login_validate_parameters(self):
         client = self.get_client()
-        self.validate_parameters(client, "login", num_parameters=1)
+        self.validate_num_parameters(client, "login", num_parameters=1)
 
     def test_login_with_invalid_parameter_returns_error(self):
         client = self.get_client()
@@ -86,4 +86,4 @@ class LoginIntegrationTestCase(IntegrationTestCase):
 
     def test_quit_validate_parameters(self):
         client = self.get_client()
-        self.validate_parameters(client, "quit", num_parameters=0)
+        self.validate_num_parameters(client, "quit", num_parameters=0)

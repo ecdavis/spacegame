@@ -15,7 +15,7 @@ class InfoIntegrationTestCase(IntegrationTestCase):
     def test_position_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_position_validate_parameters")
-        self.validate_parameters(client, "position", num_parameters=0)
+        self.validate_num_parameters(client, "position", num_parameters=0)
 
     def test_location(self):
         client = self.get_client()
@@ -30,4 +30,4 @@ class InfoIntegrationTestCase(IntegrationTestCase):
     def test_location_validate_parameters(self):
         client = self.get_client()
         self.register_and_login(client, "test_location_validate_parameters")
-        self.validate_parameters(client, "location", num_parameters=0)
+        self.validate_num_parameters(client, "location", num_parameters=0)

@@ -91,6 +91,17 @@ class IntegrationTestCase(unittest.TestCase):
         login_response = json.loads(client.recv(4096))
         self.assertEqual("command.success", login_response["message"])
 
+    def validate_parameters(self, client, command, num_parameters=0):
+        # TODO Validate parameter content as well as quantity
+        for i in range(max(num_parameters*2, 10)):
+            if i == num_parameters:
+                continue
+            client.send("%s %s\r\n" % (command, ' '.join(map(str, range(i)))))
+            response = json.loads(client.recv(4096))
+            self.assertEqual("command.error", response["message"], "%s with %d parameters" % (command, i))
+            self.assertEqual(command, response["data"]["command"])
+            # TODO Validate error message
+
     @classmethod
     def tearDownClass(cls):
         pantsmud.game.engine.stop()

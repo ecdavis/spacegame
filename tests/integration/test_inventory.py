@@ -27,14 +27,10 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
         self.assertIsNone(response2["data"]["result"]["fitted"])
         self.assertEqual(1, len(response2["data"]["result"]["inventory"]))
 
-    def test_inventory_with_parameters_returns_error(self):
+    def test_inventory_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_inventory_with_parameters")
-        client.send("inventory one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("inventory", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_inventory_validate_parameters")
+        self.validate_parameters(client, "inventory", num_parameters=0)
 
     def test_fit(self):
         client = self.get_client()
@@ -87,14 +83,10 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("fit", response["data"]["command"])
         # TODO Verify error message
 
-    def test_fit_with_no_parameters_returns_error(self):
+    def test_fit_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_fit_with_no_parameters")
-        client.send("fit\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("fit", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_fit_validate_parameters")
+        self.validate_parameters(client, "fit", num_parameters=1)
 
     def test_unfit(self):
         client = self.get_client()
@@ -123,11 +115,7 @@ class InventoryIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("unfit", response["data"]["command"])
         # TODO Verify error message
 
-    def test_unfit_with_parameters_returns_error(self):
+    def test_unfit_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_unfit_with_parameters")
-        client.send("unfit one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("unfit", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_unfit_validate_parameters")
+        self.validate_parameters(client, "unfit", num_parameters=0)

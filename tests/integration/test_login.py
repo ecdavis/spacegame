@@ -26,21 +26,9 @@ class LoginIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("command.fail", second_response["message"])
         self.assertEqual("register", second_response["data"]["command"])
 
-    def test_register_with_no_parameters_returns_error(self):
+    def test_register_validate_parameters(self):
         client = self.get_client()
-        client.send("register\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("register", response["data"]["command"])
-        # TODO Verify error message?
-
-    def test_register_with_multiple_parameters_returns_error(self):
-        client = self.get_client()
-        client.send("register one two\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("register", response["data"]["command"])
-        # TODO Verify error message?
+        self.validate_parameters(client, "register", num_parameters=1)
 
     def test_login(self):
         client = self.get_client()
@@ -78,21 +66,9 @@ class LoginIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("login", response["data"]["command"])
         # TODO Verify error message
 
-    def test_login_with_no_parameters_returns_error(self):
+    def test_login_validate_parameters(self):
         client = self.get_client()
-        client.send("login\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("login", response["data"]["command"])
-        # TODO Verify error message?
-
-    def test_login_with_multiple_parameters_returns_error(self):
-        client = self.get_client()
-        client.send("login one two\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("login", response["data"]["command"])
-        # TODO Verify error message
+        self.validate_parameters(client, "login", num_parameters=1)
 
     def test_login_with_invalid_parameter_returns_error(self):
         client = self.get_client()
@@ -108,10 +84,6 @@ class LoginIntegrationTestCase(IntegrationTestCase):
         response = client.recv(4096)
         self.assertEqual('', response)
 
-    def test_quit_with_parameters_returns_error(self):
+    def test_quit_validate_parameters(self):
         client = self.get_client()
-        client.send("quit one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("quit", response["data"]["command"])
-        # TODO Verify error message
+        self.validate_parameters(client, "quit", num_parameters=0)

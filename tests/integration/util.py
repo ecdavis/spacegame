@@ -91,9 +91,12 @@ class IntegrationTestCase(unittest.TestCase):
         login_response = json.loads(client.recv(4096))
         self.assertEqual("command.success", login_response["message"])
 
-    def validate_num_parameters(self, client, command, num_parameters=0):
+    def validate_num_parameters(self, client, command, num_parameters=0, final_parameter_is_string=False):
+        params_to_validate = max(num_parameters*2, 10)
+        if final_parameter_is_string:
+            params_to_validate = num_parameters
         # TODO Validate parameter content as well as quantity
-        for i in range(max(num_parameters*2, 10)):
+        for i in range(params_to_validate):
             if i == num_parameters:
                 continue
             client.send("%s %s\r\n" % (command, ' '.join(map(str, range(i)))))

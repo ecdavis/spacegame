@@ -29,11 +29,7 @@ class JumpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("jump", response["data"]["command"])
         # TODO Verify error message
 
-    def test_jump_with_no_parameters_returns_error(self):
+    def test_jump_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_jump_with_no_parameters")
-        client.send("jump\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("jump", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_jump_validate_parameters")
+        self.validate_num_parameters(client, "jump", num_parameters=1, final_parameter_is_string=True)

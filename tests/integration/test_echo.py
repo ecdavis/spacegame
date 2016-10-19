@@ -33,23 +33,15 @@ class EchoIntegrationTestCase(IntegrationTestCase):
         response = client.recv(4096)
         self.assertEqual('', response)
 
-    def test_quit_with_parameters_returns_error(self):
+    def test_quit_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_quit_with_parameters")
-        client.send("quit one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("quit", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_quit_validate_parameters")
+        self.validate_num_parameters(client, "quit", num_parameters=0)
 
-    def test_shutdown_with_parameters_returns_error(self):
+    def test_shutdown_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_shutdown_with_parameters")
-        client.send("shutdown one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("shutdown", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_shutdown_validate_parameters")
+        self.validate_num_parameters(client, "shutdown", num_parameters=0)
 
 
 class ShutdownIntegrationTestCase(IntegrationTestCase):

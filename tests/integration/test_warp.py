@@ -3,15 +3,6 @@ from tests.integration.util import IntegrationTestCase, StatefulIntegrationTestC
 
 
 class WarpIntegrationTestCase(IntegrationTestCase):
-    def test_warp_beacon_with_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_warp_beacon_with_parameters")
-        client.send("warp.beacon one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("warp.beacon", response["data"]["command"])
-        # TODO Verify error message
-
     def test_warp_scan_with_no_beacons_before_active_scan(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_scan_with_no_beacons_before_active_scan")
@@ -36,15 +27,6 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual({}, response2["data"]["result"]["beacons"])
         self.assertEqual({"Earth": "f5102606-bacc-4055-8e64-600efb874985"}, response2["data"]["result"]["celestials"])
 
-    def test_warp_scan_with_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_warp_scan_with_parameters")
-        client.send("warp.scan one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("warp.scan", response["data"]["command"])
-        # TODO Verify error message
-
     def test_warp_scan_activate(self):
         client = self.get_client()
         self.register_and_login(client, "test_warp_scan_activate")
@@ -53,15 +35,6 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("command.success", response["message"])
         self.assertEqual("warp.scan.activate", response["data"]["command"])
         self.assertEqual({"Earth": "f5102606-bacc-4055-8e64-600efb874985"}, response["data"]["result"]["celestials"])
-
-    def test_warp_scan_activate_with_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_warp_scan_activate_with_parameters")
-        client.send("warp.scan.activate one\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("warp.scan.activate", response["data"]["command"])
-        # TODO Verify error message
 
     def test_warp_to_celestial_before_active_scan_returns_failure(self):
         client = self.get_client()
@@ -123,14 +96,25 @@ class WarpIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("warp", response2["data"]["command"])
         # TODO Verify error message
 
-    def test_warp_with_no_parameters_returns_error(self):
+    def test_warp_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_warp_with_no_parameters")
-        client.send("warp\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("warp", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_warp_validate_parameters")
+        self.validate_num_parameters(client, "warp", num_parameters=1)
+
+    def test_warp_beacon_validate_parameters(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_beacon_validate_parameters")
+        self.validate_num_parameters(client, "warp.beacon", num_parameters=0)
+
+    def test_warp_scan_validate_parameters(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_validate_parameters")
+        self.validate_num_parameters(client, "warp.scan", num_parameters=0)
+
+    def test_warp_scan_activate_validate_parameters(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_warp_scan_activate_validate_parameters")
+        self.validate_num_parameters(client, "warp.scan.activate", num_parameters=0)
 
 
 class WarpStatefulIntegrationTestCase(StatefulIntegrationTestCase):

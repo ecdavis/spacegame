@@ -49,23 +49,10 @@ class ThrustIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("thrust.speed", response["data"]["command"])
         # TODO Verify error message
 
-    def test_thrust_speed_with_no_parameter_returns_error(self):
+    def test_thrust_speed_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_thrust_speed_with_no_parameter")
-        client.send("thrust.speed\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("thrust.speed", response["data"]["command"])
-        # TODO Verify error message
-
-    def test_thrust_speed_with_multiple_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_thrust_speed_with_multiple_parameters")
-        client.send("thrust.speed 5 5\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("thrust.speed", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_thrust_speed_validate_parameters")
+        self.validate_num_parameters(client, "thrust.speed", num_parameters=1)
 
     def test_thrust_vector(self):
         client = self.get_client()
@@ -151,38 +138,7 @@ class ThrustIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("thrust.vector", response["data"]["command"])
         # TODO Verify error message
 
-    def test_thrust_vector_with_no_parameter_returns_error(self):
+    def test_thrust_vector_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_thrust_vector_with_no_parameters")
-        client.send("thrust.vector\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("thrust.vector", response["data"]["command"])
-        # TODO Verify error message
-
-    def test_thrust_vector_with_only_x_parameter_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_thrust_vector_with_only_x_parameter")
-        client.send("thrust.vector 0.5\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("thrust.vector", response["data"]["command"])
-        # TODO Verify error message
-
-    def test_thrust_vector_with_only_x_y_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_thrust_vector_with_only_x_y_parameters")
-        client.send("thrust.vector 0.5 0.5\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("thrust.vector", response["data"]["command"])
-        # TODO Verify error message
-
-    def test_thrust_vector_with_too_many_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_thrust_vector_with_too_many_parameter")
-        client.send("thrust.vector 0.5 0.5 0.5 0.5\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("thrust.vector", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_thrust_vector_validate_parameters")
+        self.validate_num_parameters(client, "thrust.vector", num_parameters=3)

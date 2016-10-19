@@ -22,14 +22,10 @@ class ChatIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("hello, world!", response2["data"]["data"]["message"])
         self.assertEqual("test_chat_global_1", response2["data"]["data"]["mobile_from"])
 
-    def test_chat_global_with_no_message_returns_error(self):
+    def test_chat_global_validate_parameters(self):
         client = self.get_client()
-        self.register_and_login(client, "test_chat_global_with_no_message")
-        client.send("chat.global\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("chat.global", response["data"]["command"])
-        # TODO Verify error message
+        self.register_and_login(client, "test_chat_global_validate_parameters")
+        self.validate_num_parameters(client, "chat.global", num_parameters=1, final_parameter_is_string=True)
 
     def test_chat_private(self):
         client1 = self.get_client()
@@ -53,24 +49,6 @@ class ChatIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("test_chat_private_2", response2["data"]["data"]["mobile_to"])
         self.assertEqual("hello, test client!", response2["data"]["data"]["message"])
 
-    def test_chat_private_with_no_parameters_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_chat_private_with_no_parameters")
-        client.send("chat.private\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("chat.private", response["data"]["command"])
-        # TODO Verify error message
-
-    def test_chat_private_with_no_message_returns_error(self):
-        client = self.get_client()
-        self.register_and_login(client, "test_chat_private_with_no_message")
-        client.send("chat.private test\r\n")
-        response = json.loads(client.recv(4096))
-        self.assertEqual("command.error", response["message"])
-        self.assertEqual("chat.private", response["data"]["command"])
-        # TODO Verify error message
-
     def test_chat_private_with_invalid_target_returns_failure(self):
         client = self.get_client()
         self.register_and_login(client, "test_chat_private_with_invalid_target")
@@ -88,3 +66,8 @@ class ChatIntegrationTestCase(IntegrationTestCase):
         self.assertEqual("command.fail", response["message"])
         self.assertEqual("chat.private", response["data"]["command"])
         # TODO Verify error message
+
+    def test_chat_private_validate_parameters(self):
+        client = self.get_client()
+        self.register_and_login(client, "test_chat_private_validate_parameters")
+        self.validate_num_parameters(client, "chat.private", num_parameters=2, final_parameter_is_string=True)

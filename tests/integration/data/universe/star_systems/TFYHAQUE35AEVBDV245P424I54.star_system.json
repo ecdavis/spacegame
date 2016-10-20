@@ -2,7 +2,10 @@
   "auxiliary": {}, 
   "core_celestial_uuids": [
     "35b81fc4-0313-4fac-9054-7f8cc05cf092"
-  ], 
+  ],
+  "link_uuids": [
+    "cbde4247-6780-465b-b81c-2b52e61efa2e"
+  ],
   "reset_interval": -1, 
   "uuid": "99707042-84df-404a-8475-d73afe6b88ef", 
   "name": "Alpha Centauri"

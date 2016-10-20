@@ -2,7 +2,10 @@
   "auxiliary": {}, 
   "core_celestial_uuids": [
     "a74b22ea-6aa1-4410-b819-32a1b6c6613f"
-  ], 
+  ],
+  "link_uuids": [
+    "99707042-84df-404a-8475-d73afe6b88ef"
+  ],
   "reset_interval": -1, 
   "uuid": "cbde4247-6780-465b-b81c-2b52e61efa2e", 
   "name": "The Solar System"

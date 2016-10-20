@@ -46,6 +46,8 @@ def create_universe():
     u.add_celestial(c2)
     c2.star_system = s2
     s2.core_celestial_uuids.add(c2.uuid)
+    s1.link_uuids.add(s2.uuid)
+    s2.link_uuids.add(s1.uuid)
     return u
 
 

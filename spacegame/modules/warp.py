@@ -35,7 +35,7 @@ def _find_warp_destination(mobile, destination_uuid):
     celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
     for celestial in celestials:
         if celestial.uuid == destination_uuid:
-            return celestial, _random_position_around((0, 0, 0))
+            return celestial, _random_position_around((0+celestial.warp_radius, 0, 0))
     return None, None
 
 

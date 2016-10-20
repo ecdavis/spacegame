@@ -1,6 +1,14 @@
 {
   "star_system_uuid": "cbde4247-6780-465b-b81c-2b52e61efa2e", 
   "auxiliary": {}, 
-  "uuid": "a74b22ea-6aa1-4410-b819-32a1b6c6613f", 
+  "uuid": "a74b22ea-6aa1-4410-b819-32a1b6c6613f",
+  "coordinate": [
+    0,
+    0,
+    0
+  ],
+  "mass": 0,
+  "radius": 0,
+  "warp_radius": 0,
   "name": "Sol"
 }

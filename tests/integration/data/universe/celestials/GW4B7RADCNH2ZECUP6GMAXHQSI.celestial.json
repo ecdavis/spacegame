@@ -1,6 +1,14 @@
 {
   "star_system_uuid": "99707042-84df-404a-8475-d73afe6b88ef", 
   "auxiliary": {}, 
-  "uuid": "35b81fc4-0313-4fac-9054-7f8cc05cf092", 
+  "uuid": "35b81fc4-0313-4fac-9054-7f8cc05cf092",
+  "coordinate": [
+    0,
+    0,
+    0
+  ],
+  "mass": 0,
+  "radius": 0,
+  "warp_radius": 0,
   "name": "Alpha Centauri"
 }

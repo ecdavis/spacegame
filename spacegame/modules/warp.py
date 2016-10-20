@@ -1,7 +1,7 @@
 import random
 import pantsmud.game
-from pantsmud.driver import auxiliary, command, hook, parser
-from pantsmud.util import error, message
+from pantsmud.driver import auxiliary, hook
+from pantsmud.util import error
 from spacegame.core import aux_types, hook_types
 from spacegame.universe import entity
 
@@ -17,16 +17,14 @@ class WarpAux(object):
         return {}
 
 
-def warp_command(brain, cmd, args):
-    params = parser.parse([("destination_uuid", parser.UUID)], args)
-    mobile = brain.mobile
-    destination, position = _find_warp_destination(mobile, params["destination_uuid"])
+def do_warp(mobile, destination_uuid):
+    destination, position = _find_warp_destination(mobile, destination_uuid)
     if destination is None or position is None:
         raise error.CommandFail("no destination")
     hook.run(hook_types.CELESTIAL_EXIT, mobile)
     mobile.celestial = destination
     mobile.position = position
-    message.command_success(mobile, cmd)
+    return None
 
 
 def _find_warp_destination(mobile, destination_uuid):
@@ -37,7 +35,7 @@ def _find_warp_destination(mobile, destination_uuid):
     celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
     for celestial in celestials:
         if celestial.uuid == destination_uuid:
-            return celestial, _random_position_around((0, 0, 0))
+            return celestial, _random_position_around((0+celestial.warp_radius, 0, 0))
     return None, None
 
 
@@ -50,35 +48,36 @@ def _random_position_around(position):
     )
 
 
-def warp_beacon_command(brain, cmd, args):
-    parser.parse([], args)
-    mobile = brain.mobile
+def do_warp_beacon(mobile):
     beacon = entity.Entity(is_warp_beacon=True)
     beacon.celestial = mobile.celestial
     beacon.position = mobile.position
     pantsmud.game.environment.add_entity(beacon)
-    message.command_success(mobile, cmd, {"beacon_uuid": str(beacon.uuid)})
+    return {
+        "beacon_uuid": str(beacon.uuid)
+    }
 
 
-def warp_scan_command(brain, cmd, args):
-    parser.parse([], args)
-    mobile = brain.mobile
+def do_warp_scan(mobile):
     beacons = mobile.star_system.get_entities(is_warp_beacon=True)
     beacon_data = {b.name: str(b.uuid) for b in beacons if b.celestial is not mobile.celestial}
     celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
     celestial_data = {c.name: str(c.uuid) for c in celestials if c is not mobile.celestial}
-    message.command_success(mobile, cmd, {"beacons": beacon_data, "celestials": celestial_data})
+    return {
+        "beacons": beacon_data,
+        "celestials": celestial_data
+    }
 
 
-def warp_scan_activate_command(brain, cmd, args):
-    parser.parse([], args)
-    mobile = brain.mobile
+def do_warp_scan_activate(mobile):
     celestials = mobile.star_system.get_celestials()
     celestial_data = {c.name: c.uuid for c in celestials if c is not mobile.celestial}
     mobile.aux["warp"].scanner = celestial_data.values()[:]
     for k, v in celestial_data.items():  # TODO ugh
         celestial_data[k] = str(v)
-    message.command_success(mobile, cmd, {"celestials": celestial_data})
+    return {
+        "celestials": celestial_data
+    }
 
 
 def clear_warp_scanner(_, mobile):
@@ -87,9 +86,5 @@ def clear_warp_scanner(_, mobile):
 
 def init():
     auxiliary.install(aux_types.AUX_TYPE_ENTITY, "warp", WarpAux)
-    command.add_command("warp", warp_command)
-    command.add_command("warp.beacon", warp_beacon_command)
-    command.add_command("warp.scan", warp_scan_command)
-    command.add_command("warp.scan.activate", warp_scan_activate_command)
     hook.add(hook_types.CELESTIAL_EXIT, clear_warp_scanner)
     hook.add(hook_types.STAR_SYSTEM_EXIT, clear_warp_scanner)

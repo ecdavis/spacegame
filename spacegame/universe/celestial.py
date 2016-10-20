@@ -12,6 +12,10 @@ class Celestial(object):
         self.universe = None
         self.name = ""
         self.star_system_uuid = None
+        self.coordinate = (0, 0, 0)
+        self.mass = 0
+        self.radius = 0
+        self.warp_radius = 0
         self.aux = auxiliary.new_data(aux_types.AUX_TYPE_CELESTIAL)
 
     def load_data(self, data):
@@ -32,6 +36,10 @@ class Celestial(object):
         self.uuid = uuid.UUID(data["uuid"])
         self.name = data["name"]
         self.star_system_uuid = uuid.UUID(data["star_system_uuid"])
+        self.coordinate = tuple(data["coordinate"])
+        self.mass = int(data["mass"])
+        self.radius = int(data["radius"])
+        self.warp_radius = int(data["warp_radius"])
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
     def save_data(self):
@@ -42,6 +50,10 @@ class Celestial(object):
             "uuid": str(self.uuid),
             "name": self.name,
             "star_system_uuid": str(self.star_system_uuid),
+            "coordinate": self.coordinate,
+            "mass": self.mass,
+            "radius": self.radius,
+            "warp_radius": self.warp_radius,
             "auxiliary": auxiliary.save_data(self.aux)
         }
 

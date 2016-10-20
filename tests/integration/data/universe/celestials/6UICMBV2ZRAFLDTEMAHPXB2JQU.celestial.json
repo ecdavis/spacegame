@@ -1,6 +1,14 @@
 {
-  "star_system_uuid": "cbde4247-6780-465b-b81c-2b52e61efa2e", 
-  "auxiliary": {}, 
-  "uuid": "f5102606-bacc-4055-8e64-600efb874985", 
+  "star_system_uuid": "cbde4247-6780-465b-b81c-2b52e61efa2e",
+  "auxiliary": {},
+  "uuid": "f5102606-bacc-4055-8e64-600efb874985",
+  "coordinate": [
+    0,
+    0,
+    0
+  ],
+  "mass": 0,
+  "radius": 0,
+  "warp_radius": 0,
   "name": "Earth"
 }

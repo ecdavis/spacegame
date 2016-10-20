@@ -2,6 +2,7 @@ import mock
 from pantsmud.driver import hook
 from spacegame.core import hook_types
 from spacegame.universe.star_system import StarSystem
+from spacegame.universe.universe import Universe
 from tests.unit.util import UnitTestCase
 
 
@@ -13,6 +14,16 @@ class StarSystemUnitTestCase(UnitTestCase):
         hook.add(hook_types.STAR_SYSTEM_RESET, self.hook_star_system_reset)
         self.star_system = StarSystem()
         self.star_system.reset_interval = 10
+
+    def test_links(self):
+        u = Universe()
+        s1 = StarSystem()
+        u.add_star_system(s1)
+        s2 = StarSystem()
+        u.add_star_system(s2)
+        s1.link_uuids.add(s2.uuid)
+        self.assertEqual({s2}, s1.links)
+        self.assertEqual(set(), s2.links)
 
     def test_change_reset_interval_from_negative_updates_reset_timer(self):
         self.star_system.reset_interval = -1

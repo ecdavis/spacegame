@@ -12,6 +12,7 @@ class StarSystem(object):
         self.universe = None
         self.name = ""
         self.core_celestial_uuids = set()
+        self.link_uuids = set()
         self._reset_interval = -1
         self.reset_timer = -1
         self.aux = auxiliary.new_data(aux_types.AUX_TYPE_STAR_SYSTEM)
@@ -26,6 +27,9 @@ class StarSystem(object):
         Data layout:
             {
                 "uuid": "<uuid>",
+                "name": "<name>",
+                "core_celestial_uuids": ["<uuid>"],
+                "link_uuids": ["<uuid>"],
                 "reset_interval": <int>,
                 "auxiliary": <dict>  # This will be passed to pantsmud.auxiliary.load_data
             }
@@ -33,6 +37,7 @@ class StarSystem(object):
         self.uuid = uuid.UUID(data["uuid"])
         self.name = data["name"]
         self.core_celestial_uuids = set((uuid.UUID(s) for s in data["core_celestial_uuids"]))
+        self.link_uuids = set((uuid.UUID(s) for s in data["link_uuids"]))
         self.reset_interval = data["reset_interval"]
         self.aux = auxiliary.load_data(self.aux, data["auxiliary"])
 
@@ -44,6 +49,7 @@ class StarSystem(object):
             "uuid": str(self.uuid),
             "name": self.name,
             "core_celestial_uuids": list((str(u) for u in self.core_celestial_uuids)),
+            "link_uuids": list((str(u) for u in self.link_uuids)),
             "reset_interval": self.reset_interval,
             "auxiliary": auxiliary.save_data(self.aux)
         }
@@ -56,6 +62,13 @@ class StarSystem(object):
         When adding an entity to the StarSystem, it should be placed in one of these Celestials.
         """
         return set((self.universe.celestials[u] for u in self.core_celestial_uuids))
+
+    @property
+    def links(self):
+        """
+        Get the StarSystems that this StarSystem is linked to.
+        """
+        return set((self.universe.star_systems[u] for u in self.link_uuids))
 
     @property
     def reset_interval(self):

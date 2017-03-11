@@ -1,7 +1,6 @@
-from pantsmud.driver import hook
 from spacegame.core import handler, login_manager, user
 
 
-def init():
-    handler.init(hook)
+def init(hooks):
+    handler.init(hooks)
     login_manager.init()

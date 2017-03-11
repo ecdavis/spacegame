@@ -6,7 +6,7 @@ import spacegame.modules
 
 
 def init():
-    spacegame.core.init()
+    spacegame.core.init(hook)
     spacegame.modules.init(auxiliary, command, hook, login_manager)  # Init modules after core
     spacegame.commands.init()  # Init commands after modules
 

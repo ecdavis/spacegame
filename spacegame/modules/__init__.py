@@ -7,7 +7,7 @@ def init():
     echo.init(command)
     info.init(command)
     inventory.init(auxiliary, command, hook)
-    jump.init()
+    jump.init(command)
     login.init()
     thrust.init()
     warp.init()

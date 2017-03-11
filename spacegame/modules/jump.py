@@ -1,6 +1,6 @@
 import random
 import pantsmud.game
-from pantsmud.driver import command, hook, parser
+from pantsmud.driver import hook, parser
 from pantsmud.util import error, message
 from spacegame.core import hook_types
 
@@ -19,5 +19,5 @@ def jump_command(brain, cmd, args):
     message.command_success(mobile, cmd, None)
 
 
-def init():
-    command.add_command("jump", jump_command)
+def init(commands):
+    commands.add_command("jump", jump_command)

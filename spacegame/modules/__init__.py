@@ -5,7 +5,7 @@ from spacegame.modules import chat, echo, info, inventory, jump, login, thrust, 
 def init():
     chat.init(command)
     echo.init(command)
-    info.init()
+    info.init(command)
     inventory.init()
     jump.init()
     login.init()

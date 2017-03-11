@@ -27,6 +27,6 @@ def close_brain_hook(_, brain):
         pantsmud.game.environment.remove_brain(brain)
 
 
-def init():
-    hook.add(hook.HOOK_OPEN_BRAIN, open_brain_hook)
-    hook.add(hook.HOOK_CLOSE_BRAIN, close_brain_hook)
+def init(hooks):
+    hooks.add(hooks.HOOK_OPEN_BRAIN, open_brain_hook)
+    hooks.add(hooks.HOOK_CLOSE_BRAIN, close_brain_hook)

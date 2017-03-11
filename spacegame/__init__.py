@@ -1,10 +1,13 @@
-import spacegame.commands
+from pantsmud.driver import auxiliary, command, hook
 import spacegame.core
+from spacegame.core import login_manager
+import spacegame.commands
 import spacegame.modules
+
 
 def init():
     spacegame.core.init()
-    spacegame.modules.init()  # Init modules after core
+    spacegame.modules.init(auxiliary, command, hook, login_manager)  # Init modules after core
     spacegame.commands.init()  # Init commands after modules
 
 

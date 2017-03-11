@@ -1,17 +1,15 @@
-from pantsmud.driver import auxiliary, command, hook
-from spacegame.core import login_manager
 from spacegame.modules import chat, echo, info, inventory, jump, login, thrust, warp
 
 
-def init():
-    chat.init(command)
-    echo.init(command)
-    info.init(command)
-    inventory.init(auxiliary, command, hook)
-    jump.init(command)
-    login.init(login_manager)
-    thrust.init(command)
-    warp.init(auxiliary, hook)
+def init(auxiliaries, game_commands, hooks, login_commands):
+    chat.init(game_commands)
+    echo.init(game_commands)
+    info.init(game_commands)
+    inventory.init(auxiliaries, game_commands, hooks)
+    jump.init(game_commands)
+    login.init(login_commands)
+    thrust.init(game_commands)
+    warp.init(auxiliaries, hooks)
 
 
 def start():

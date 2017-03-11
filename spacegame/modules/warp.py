@@ -1,6 +1,6 @@
 import random
 import pantsmud.game
-from pantsmud.driver import auxiliary, hook
+from pantsmud.driver import hook
 from pantsmud.util import error
 from spacegame.core import aux_types, hook_types
 from spacegame.universe import entity
@@ -84,7 +84,7 @@ def clear_warp_scanner(_, mobile):
     mobile.aux["warp"].scanner = []
 
 
-def init():
-    auxiliary.install(aux_types.AUX_TYPE_ENTITY, "warp", WarpAux)
-    hook.add(hook_types.CELESTIAL_EXIT, clear_warp_scanner)
-    hook.add(hook_types.STAR_SYSTEM_EXIT, clear_warp_scanner)
+def init(auxiliaries, hooks):
+    auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "warp", WarpAux)
+    hooks.add(hook_types.CELESTIAL_EXIT, clear_warp_scanner)
+    hooks.add(hook_types.STAR_SYSTEM_EXIT, clear_warp_scanner)

@@ -11,7 +11,7 @@ def init():
     jump.init(command)
     login.init(login_manager)
     thrust.init(command)
-    warp.init()
+    warp.init(auxiliary, hook)
 
 
 def start():

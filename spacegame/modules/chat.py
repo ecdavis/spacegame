@@ -2,35 +2,77 @@ from pantsmud.driver import parser
 from pantsmud.util import error, message
 
 
-def chat_global_command(brain, cmd, args):
-    params = parser.parse([("message", parser.STRING)], args)
-    mobile = brain.mobile
-    universe = mobile.universe
-    data = {"mobile_from": mobile.name, "message": params["message"]}
-    message.command_success(mobile, cmd, data)
-    for m in universe.get_mobiles():
-        if m is mobile:
-            continue
-        message.notify(m, cmd, data)
+class Service(object):
+    def __init__(self, universe, messages):
+        self.universe = universe
+        self.messages = messages
+
+    def chat_global(self, mobile, message):
+        data = {"mobile_from": mobile.name, "message": message}
+        for m in self.universe.get_mobiles():
+            if m is mobile:
+                continue
+            self.messages.notify(m, "chat.global", data)
+        self.messages.command_success(mobile, "chat.global", data)
+
+    def chat_private(self, mobile, target_name, message):
+        target = self.universe.get_entity(target_name)
+        if not target:
+            raise error.CommandFail()  # TODO Add error message
+        if target is mobile:
+            raise error.CommandFail()  # TODO Add error message
+        data = {
+            "mobile_from": mobile.name,
+            "mobile_to": target.name,
+            "message": message
+        }
+        self.messages.notify(target, "chat.private", data)
+        self.messages.command_success(mobile, "chat.private", data)
 
 
-def chat_private_command(brain, cmd, args):
-    params = parser.parse([("mobile_name", parser.WORD), ("message", parser.STRING)], args)
-    mobile = brain.mobile
-    target = mobile.universe.get_entity(params["mobile_name"])
-    if not target:
-        raise error.CommandFail()  # TODO Add error message.
-    if target is mobile:
-        raise error.CommandFail()  # TODO Add error message.
-    data = {
-        "mobile_from": mobile.name,
-        "mobile_to": target.name,
-        "message": params["message"]
-    }
-    message.notify(target, cmd, data)
-    message.command_success(mobile, cmd, data)
+class Endpoint(object):
+    def __init__(self, service):
+        self.service = service
+
+    def chat_global(self, request):
+        self.service.chat_global(
+            request["mobile"],
+            request["message"]
+        )
+
+    def chat_private(self, request):
+        self.service.chat_private(
+            request["mobile"],
+            request["target_name"],
+            request["message"]
+        )
 
 
-def init(commands):
-    commands.add_command("chat.global", chat_global_command)
-    commands.add_command("chat.private", chat_private_command)
+def make_chat_global_command(endpoint):
+    def chat_global_command(brain, cmd, args):
+        params = parser.parse([("message", parser.STRING)], args)
+        request = {
+            "mobile": brain.mobile,
+            "message": params["message"]
+        }
+        endpoint.chat_global(request)
+    return chat_global_command
+
+
+def make_chat_private_command(endpoint):
+    def chat_private_command(brain, cmd, args):
+        params = parser.parse([("mobile_name", parser.WORD), ("message", parser.STRING)], args)
+        request = {
+            "mobile": brain.mobile,
+            "target_name": params["mobile_name"],
+            "message": params["message"]
+        }
+        endpoint.chat_private(request)
+    return chat_private_command
+
+
+def init(commands, universe):
+    service = Service(universe, message)
+    endpoint = Endpoint(service)
+    commands.add_command("chat.global", make_chat_global_command(endpoint))
+    commands.add_command("chat.private", make_chat_private_command(endpoint))

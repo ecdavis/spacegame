@@ -91,7 +91,8 @@ def main(data_dir, addr):
         pantsmud.driver.auxiliary,
         pantsmud.driver.command,
         pantsmud.driver.hook,
-        spacegame.core.login_manager
+        spacegame.core.login_manager,
+        universe
     )
 
     # Create the server

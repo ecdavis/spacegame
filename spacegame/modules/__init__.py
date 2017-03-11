@@ -1,8 +1,8 @@
 from spacegame.modules import chat, echo, info, inventory, jump, login, thrust, warp
 
 
-def init(auxiliaries, game_commands, hooks, login_commands):
-    chat.init(game_commands)
+def init(auxiliaries, game_commands, hooks, login_commands, universe):
+    chat.init(game_commands, universe)
     echo.init(game_commands)
     info.init(game_commands)
     inventory.init(auxiliaries, game_commands, hooks)

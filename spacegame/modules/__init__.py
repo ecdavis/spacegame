@@ -1,8 +1,9 @@
+from pantsmud.driver import command
 from spacegame.modules import chat, echo, info, inventory, jump, login, thrust, warp
 
 
 def init():
-    chat.init()
+    chat.init(command)
     echo.init()
     info.init()
     inventory.init()

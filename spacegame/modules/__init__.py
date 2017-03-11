@@ -10,7 +10,7 @@ def init():
     inventory.init(auxiliary, command, hook)
     jump.init(command)
     login.init(login_manager)
-    thrust.init()
+    thrust.init(command)
     warp.init()
 
 

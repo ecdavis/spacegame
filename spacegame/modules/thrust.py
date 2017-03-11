@@ -1,5 +1,5 @@
 import pantsmud.game
-from pantsmud.driver import command, parser
+from pantsmud.driver import parser
 from pantsmud.util import error, message
 
 
@@ -42,9 +42,9 @@ def position_update_cycle():
         position_update(mobile, POSITION_UPDATE_TICK)
 
 
-def init():
-    command.add_command("thrust.speed", thrust_speed_command)
-    command.add_command("thrust.vector", thrust_vector_command)
+def init(commands):
+    commands.add_command("thrust.speed", thrust_speed_command)
+    commands.add_command("thrust.vector", thrust_vector_command)
 
 
 def start():

@@ -1,4 +1,4 @@
-from pantsmud.driver import command, parser
+from pantsmud.driver import parser
 from pantsmud.util import error, message
 
 
@@ -31,6 +31,6 @@ def chat_private_command(brain, cmd, args):
     message.command_success(mobile, cmd, data)
 
 
-def init():
-    command.add_command("chat.global", chat_global_command)
-    command.add_command("chat.private", chat_private_command)
+def init(commands):
+    commands.add_command("chat.global", chat_global_command)
+    commands.add_command("chat.private", chat_private_command)

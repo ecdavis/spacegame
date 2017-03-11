@@ -1,5 +1,5 @@
 import pantsmud
-from pantsmud.driver import auxiliary, command, hook, parser
+from pantsmud.driver import parser
 from pantsmud.util import error, message
 from spacegame.core import aux_types, hook_types
 from spacegame.universe import item
@@ -90,10 +90,10 @@ def clear_inventory_hook(_, mobile):
         pantsmud.game.environment.remove_item(i)
 
 
-def init():
-    auxiliary.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
-    command.add_command("inventory", inventory_command)
-    command.add_command("fit", fit_command)
-    command.add_command("unfit", unfit_command)
-    command.add_command("test.add_active_warp_scanner", test_add_active_warp_scanner_command)
-    hook.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)
+def init(auxiliaries, commands, hooks):
+    auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
+    commands.add_command("inventory", inventory_command)
+    commands.add_command("fit", fit_command)
+    commands.add_command("unfit", unfit_command)
+    commands.add_command("test.add_active_warp_scanner", test_add_active_warp_scanner_command)
+    hooks.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)

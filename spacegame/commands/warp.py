@@ -1,4 +1,4 @@
-from pantsmud.driver import command, parser
+from pantsmud.driver import parser
 from pantsmud.util import message
 from spacegame.modules import warp
 
@@ -27,8 +27,8 @@ def warp_scan_activate_command(brain, cmd, args):
     message.command_success(brain, cmd, result)
 
 
-def init():
-    command.add_command("warp", warp_command)
-    command.add_command("warp.beacon", warp_beacon_command)
-    command.add_command("warp.scan", warp_scan_command)
-    command.add_command("warp.scan.activate", warp_scan_activate_command)
+def init(commands):
+    commands.add_command("warp", warp_command)
+    commands.add_command("warp.beacon", warp_beacon_command)
+    commands.add_command("warp.scan", warp_scan_command)
+    commands.add_command("warp.scan.activate", warp_scan_activate_command)

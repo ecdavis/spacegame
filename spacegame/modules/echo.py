@@ -1,5 +1,5 @@
 import pantsmud.game
-from pantsmud.driver import command, hook, parser
+from pantsmud.driver import hook, parser
 from pantsmud.util import message
 from spacegame.core import user
 
@@ -26,7 +26,7 @@ def shutdown_command(brain, _, args):
     hook.run(hook.HOOK_SHUTDOWN)
 
 
-def init():
-    command.add_command("echo", echo_command)
-    command.add_command("quit", quit_command)
-    command.add_command("shutdown", shutdown_command)
+def init(commands):
+    commands.add_command("echo", echo_command)
+    commands.add_command("quit", quit_command)
+    commands.add_command("shutdown", shutdown_command)

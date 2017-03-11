@@ -87,7 +87,12 @@ def main(data_dir, addr):
     # Load up our code -- driver before game
     pantsmud.driver.init()
     pantsmud.game.init(engine, universe)
-    spacegame.init()
+    spacegame.init(
+        pantsmud.driver.auxiliary,
+        pantsmud.driver.command,
+        pantsmud.driver.hook,
+        spacegame.core.login_manager
+    )
 
     # Create the server
     server = pantsmud.net.GameServer(engine=engine)

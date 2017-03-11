@@ -3,7 +3,7 @@ import random
 import pantsmud.game
 from pantsmud.driver import command, parser
 from pantsmud.util import error, message
-from spacegame.core import login_manager, user
+from spacegame.core import user
 from spacegame.universe import entity
 
 
@@ -47,7 +47,7 @@ def quit_command(brain, _, args):
     brain.close()
 
 
-def init():
-    login_manager.add_command("register", register_command)
-    login_manager.add_command("login", login_command)
-    login_manager.add_command("quit", quit_command)
+def init(commands):
+    commands.add_command("register", register_command)
+    commands.add_command("login", login_command)
+    commands.add_command("quit", quit_command)

@@ -1,5 +1,4 @@
 import spacegame.core
-import spacegame.commands
 import spacegame.modules
 
 

@@ -10,7 +10,7 @@ setup(
     author_email="me@ezdwt.com",
     url="http://github.com/ecdavis/spacegame",
     download_url="https://github.com/ecdavis/spacegame/tarball/master",
-    packages=["spacegame", "spacegame.commands", "spacegame.core", "spacegame.modules", "spacegame.universe"],
+    packages=["spacegame", "spacegame.core", "spacegame.modules", "spacegame.universe"],
     test_suite="tests.get_all_tests",
     install_requires=["pants >= 1.0", "pantsmud >= 0.5.0"],
     tests_require=['mock'],

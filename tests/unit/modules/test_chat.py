@@ -8,6 +8,8 @@ from tests.unit.util import UnitTestCase
 
 class ChatServiceUnitTestCase(UnitTestCase):
     def setUp(self):
+        UnitTestCase.setUp(self)
+
         self.universe = universe.Universe()
         self.messages = messages.Messages()
         self.service = chat.Service(self.universe, self.messages)
@@ -80,6 +82,8 @@ class ChatServiceUnitTestCase(UnitTestCase):
 
 class ChatEndpointUnitTestCase(UnitTestCase):
     def setUp(self):
+        UnitTestCase.setUp(self)
+
         self.universe = universe.Universe()
         self.messages = messages.Messages()
         self.service = chat.Service(self.universe, self.messages)
@@ -128,6 +132,8 @@ class ChatEndpointUnitTestCase(UnitTestCase):
 
 class ChatCommandUnitTestCase(UnitTestCase):
     def setUp(self):
+        UnitTestCase.setUp(self)
+
         self.universe = universe.Universe()
         self.messages = messages.Messages()
         self.service = chat.Service(self.universe, self.messages)

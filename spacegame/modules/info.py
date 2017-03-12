@@ -10,26 +10,27 @@ class Service(object):
         return mobile.celestial.name, mobile.star_system.name
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def position(self, request):
-        result = self.service.position(
+def make_position_endpoint(service):
+    def position_endpoint(request):
+        result = service.position(
             request["mobile"]
         )
         return {
             "position": result
         }
+    return position_endpoint
 
-    def location(self, request):
-        celestial_name, star_system_name = self.service.location(
+
+def make_location_endpoint(service):
+    def location_endpoint(request):
+        celestial_name, star_system_name = service.location(
             request["mobile"]
         )
         return {
             "celestial": celestial_name,
             "star_system": star_system_name
         }
+    return location_endpoint
 
 
 def make_position_command(endpoint):
@@ -38,7 +39,7 @@ def make_position_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.position(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return position_command
 
@@ -49,13 +50,22 @@ def make_location_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.location(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return location_command
 
 
 def init(commands):
     service = Service()
-    endpoint = Endpoint(service)
-    commands.add_command("position", make_position_command(endpoint))
-    commands.add_command("location", make_location_command(endpoint))
+    commands.add_command(
+        "position",
+        make_position_command(
+            make_position_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "location",
+        make_location_command(
+            make_location_endpoint(service)
+        )
+    )

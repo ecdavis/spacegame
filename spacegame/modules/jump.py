@@ -1,6 +1,6 @@
 import random
 from pantsmud.driver import parser
-from pantsmud.util import error
+from pantsmud.util import error, message
 from spacegame.core import hook_types
 
 
@@ -18,7 +18,6 @@ class Service(object):
             raise error.CommandFail()  # TODO Add error message.
         self.hooks.run(hook_types.STAR_SYSTEM_EXIT, mobile)
         mobile.celestial = random.choice(list(star_system.core_celestials))
-        self.messages.command_success(mobile, "jump", None)
 
 
 class Endpoint(object):
@@ -40,6 +39,7 @@ def make_jump_command(endpoint):
             "system_name": params["system_name"]
         }
         endpoint.jump(request)
+        message.command_success(brain, cmd, None)
     return jump_command
 
 

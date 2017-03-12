@@ -26,27 +26,29 @@ class Service(object):
         return None
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def echo(self, request):
-        result = self.service.echo(
+def make_echo_endpoint(service):
+    def echo_endpoint(request):
+        result = service.echo(
             request["line"]
         )
         return {
             "line": result
         }
+    return echo_endpoint
 
-    def quit(self, request):
-        self.service.quit(
+
+def make_quit_endpoint(service):
+    def quit_endpoint(request):
+        service.quit(
             request["brain"]
         )
-        return None
+    return quit_endpoint
 
-    def shutdown(self, request):
-        self.service.shutdown()
-        return None
+
+def make_shutdown_endpoint(service):
+    def shutdown_endpoint(request):
+        service.shutdown()
+    return shutdown_endpoint
 
 
 def make_echo_command(endpoint):
@@ -54,7 +56,7 @@ def make_echo_command(endpoint):
         request = {
             "line": args
         }
-        response = endpoint.echo(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return echo_command
 
@@ -65,7 +67,7 @@ def make_quit_command(endpoint):
         request = {
             "brain": brain
         }
-        endpoint.quit(request)
+        endpoint(request)
     return quit_command
 
 
@@ -73,13 +75,27 @@ def make_shutdown_command(endpoint):
     def shutdown_command(brain, _, args):
         parser.parse([], args)
         request = {}
-        endpoint.shutdown(request)
+        endpoint(request)
     return shutdown_command
 
 
 def init(commands, hooks, universe, users):
     service = Service(hooks, universe, users)
-    endpoint = Endpoint(service)
-    commands.add_command("echo", make_echo_command(endpoint))
-    commands.add_command("quit", make_quit_command(endpoint))
-    commands.add_command("shutdown", make_shutdown_command(endpoint))
+    commands.add_command(
+        "echo",
+        make_echo_command(
+            make_echo_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "quit",
+        make_quit_command(
+            make_quit_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "shutdown",
+        make_shutdown_command(
+            make_shutdown_endpoint(service)
+        )
+    )

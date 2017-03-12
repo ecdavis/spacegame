@@ -19,15 +19,13 @@ class Service(object):
         mobile.celestial = random.choice(list(star_system.core_celestials))
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def jump(self, request):
-        self.service.jump(
+def make_jump_endpoint(service):
+    def jump_endpoint(request):
+        service.jump(
             request["mobile"],
             request["system_name"]
         )
+    return jump_endpoint
 
 
 def make_jump_command(endpoint):
@@ -37,12 +35,16 @@ def make_jump_command(endpoint):
             "mobile": brain.mobile,
             "system_name": params["system_name"]
         }
-        endpoint.jump(request)
+        endpoint(request)
         message.command_success(brain, cmd, None)
     return jump_command
 
 
 def init(commands, hooks, universe):
     service = Service(hooks, universe)
-    endpoint = Endpoint(service)
-    commands.add_command("jump", make_jump_command(endpoint))
+    commands.add_command(
+        "jump",
+        make_jump_command(
+            make_jump_endpoint(service)
+        )
+    )

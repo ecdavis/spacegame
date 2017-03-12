@@ -45,32 +45,36 @@ class Service(object):
         brain.close()
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def register(self, request):
-        player_name, user_uuid = self.service.register(
+def make_register_endpoint(service):
+    def register_endpoint(request):
+        player_name, user_uuid = service.register(
             request["name"]
         )
         return {
             "name": player_name,
             "uuid": str(user_uuid)
         }
+    return register_endpoint
 
-    def login(self, request):
-        player_name = self.service.login(
+
+def make_login_endpoint(service):
+    def login_endpoint(request):
+        player_name = service.login(
             request["brain"],
             request["user_uuid"]
         )
         return {
             "name": player_name
         }
+    return login_endpoint
 
-    def quit(self, request):
-        self.service.quit(
+
+def make_quit_endpoint(service):
+    def quit_endpoint(request):
+        service.quit(
             request["brain"]
         )
+    return quit_endpoint
 
 
 def make_register_command(endpoint):
@@ -79,7 +83,7 @@ def make_register_command(endpoint):
         request = {
             "name": params["name"]
         }
-        response = endpoint.register(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return register_command
 
@@ -91,7 +95,7 @@ def make_login_command(endpoint):
             "brain": brain,
             "user_uuid": params["uuid"]
         }
-        response = endpoint.login(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return login_command
 
@@ -102,7 +106,7 @@ def make_quit_command(endpoint):
         request = {
             "brain": brain
         }
-        endpoint.quit(request)
+        endpoint(request)
     return quit_command
 
 
@@ -113,7 +117,21 @@ def init(entities, game_commands, login_commands, universe, users):
         universe,
         users
     )
-    endpoint = Endpoint(service)
-    login_commands.add_command("register", make_register_command(endpoint))
-    login_commands.add_command("login", make_login_command(endpoint))
-    login_commands.add_command("quit", make_quit_command(endpoint))
+    login_commands.add_command(
+        "register",
+        make_register_command(
+            make_register_endpoint(service)
+        )
+    )
+    login_commands.add_command(
+        "login",
+        make_login_command(
+            make_login_endpoint(service)
+        )
+    )
+    login_commands.add_command(
+        "quit",
+        make_quit_command(
+            make_quit_endpoint(service)
+        )
+    )

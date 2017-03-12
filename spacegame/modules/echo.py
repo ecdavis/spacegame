@@ -1,4 +1,5 @@
 from pantsmud.driver import parser
+from pantsmud.util import message
 
 
 class Service(object):
@@ -8,13 +9,14 @@ class Service(object):
         self.universe = universe
         self.users = users
 
-    def echo(self, mobile, line):
-        self.messages.command_success(mobile, "echo", {"line": line})
+    def echo(self, line):
+        return line
 
     def quit(self, brain):
         if brain.mobile and brain.identity:
             self.users.save_player(brain.mobile)
         brain.close()
+        return None
 
     def shutdown(self):
         for m in self.universe.get_mobiles():
@@ -22,6 +24,7 @@ class Service(object):
                 self.users.save_player(m)
                 m.brain.close()
         self.hooks.run(self.hooks.HOOK_SHUTDOWN)
+        return None
 
 
 class Endpoint(object):
@@ -29,27 +32,31 @@ class Endpoint(object):
         self.service = service
 
     def echo(self, request):
-        self.service.echo(
-            request["mobile"],
+        result = self.service.echo(
             request["line"]
         )
+        return {
+            "line": result
+        }
 
     def quit(self, request):
         self.service.quit(
             request["brain"]
         )
+        return None
 
     def shutdown(self, request):
         self.service.shutdown()
+        return None
 
 
 def make_echo_command(endpoint):
     def echo_command(brain, cmd, args):
         request = {
-            "mobile": brain.mobile,
             "line": args
         }
-        endpoint.echo(request)
+        response = endpoint.echo(request)
+        message.command_success(brain, cmd, response)
     return echo_command
 
 

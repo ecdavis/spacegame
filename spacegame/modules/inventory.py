@@ -74,37 +74,44 @@ class Service(object):
         return i.uuid
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def inventory(self, request):
-        fitted_data, inventory_data = self.service.inventory(
+def make_inventory_endpoint(service):
+    def inventory_endpoint(request):
+        fitted_data, inventory_data = service.inventory(
             request["mobile"]
         )
         return {
             "fitted": fitted_data,
             "inventory": inventory_data
         }
+    return inventory_endpoint
 
-    def fit(self, request):
-        self.service.fit(
+
+def make_fit_endpoint(service):
+    def fit_endpoint(request):
+        service.fit(
             request["mobile"],
             request["item_uuid"],
         )
+    return fit_endpoint
 
-    def unfit(self, request):
-        self.service.unfit(
+
+def make_unfit_endpoint(service):
+    def unfit_endpoint(request):
+        service.unfit(
             request["mobile"]
         )
+    return unfit_endpoint
 
-    def test_add_active_warp_scanner(self, request):
-        item_uuid = self.service.test_add_active_warp_scanner(
+
+def make_test_add_active_warp_scanner_endpoint(service):
+    def test_add_active_warp_scanner_endpoint(request):
+        item_uuid = service.test_add_active_warp_scanner(
             request["mobile"]
         )
         return {
             "item": str(item_uuid)
         }
+    return test_add_active_warp_scanner_endpoint
 
 
 def make_inventory_command(endpoint):
@@ -113,7 +120,7 @@ def make_inventory_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.inventory(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return inventory_command
 
@@ -125,7 +132,7 @@ def make_fit_command(endpoint):
             "mobile": brain.mobile,
             "item_uuid": params["item_uuid"]
         }
-        endpoint.fit(request)
+        endpoint(request)
         message.command_success(brain, cmd, None)
     return fit_command
 
@@ -136,7 +143,7 @@ def make_unfit_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        endpoint.unfit(request)
+        endpoint(request)
         message.command_success(brain, cmd, None)
     return unfit_command
 
@@ -147,7 +154,7 @@ def make_test_add_active_warp_scanner_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.test_add_active_warp_scanner(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return test_add_active_warp_scanner_command
 
@@ -163,8 +170,27 @@ def init(auxiliaries, commands, hooks, universe):
     auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
     hooks.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)
     service = Service(universe)
-    endpoint = Endpoint(service)
-    commands.add_command("inventory", make_inventory_command(endpoint))
-    commands.add_command("fit", make_fit_command(endpoint))
-    commands.add_command("unfit", make_unfit_command(endpoint))
-    commands.add_command("test.add_active_warp_scanner", make_test_add_active_warp_scanner_command(endpoint))
+    commands.add_command(
+        "inventory",
+        make_inventory_command(
+            make_inventory_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "fit",
+        make_fit_command(
+            make_fit_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "unfit",
+        make_unfit_command(
+            make_unfit_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "test.add_active_warp_scanner",
+        make_test_add_active_warp_scanner_command(
+            make_test_add_active_warp_scanner_endpoint(service)
+        )
+    )

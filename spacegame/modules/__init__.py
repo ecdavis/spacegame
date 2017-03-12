@@ -9,7 +9,7 @@ def init(auxiliaries, game_commands, hooks, login_commands, universe):
     jump.init(game_commands, universe)
     login.init(game_commands, login_commands, universe)
     thrust.init(game_commands)
-    warp.init(auxiliaries, hooks)
+    warp.init(auxiliaries, game_commands, hooks, universe)
 
 
 def start():

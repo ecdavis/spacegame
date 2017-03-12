@@ -1,18 +1,15 @@
-from pantsmud.util import message
-from spacegame.core import user
 from spacegame.modules import chat, echo, info, inventory, jump, login, thrust, warp
-from spacegame.universe import entity
 
 
-def init(auxiliaries, game_commands, hooks, login_commands, universe):
-    chat.init(game_commands, message, universe)
-    echo.init(game_commands, hooks, message, universe, user)
-    info.init(game_commands, message)
-    inventory.init(auxiliaries, game_commands, hooks, message, universe)
-    jump.init(game_commands, hooks, message, universe)
-    login.init(entity, game_commands, login_commands, message, universe, user)
-    thrust.init(game_commands, message)
-    warp.init(auxiliaries, game_commands, entity, hooks, universe)
+def init(auxiliaries, entities, game_commands, hooks, login_commands, messages, universe, users):
+    chat.init(game_commands, messages, universe)
+    echo.init(game_commands, hooks, messages, universe, users)
+    info.init(game_commands, messages)
+    inventory.init(auxiliaries, game_commands, hooks, messages, universe)
+    jump.init(game_commands, hooks, messages, universe)
+    login.init(entities, game_commands, login_commands, messages, universe, users)
+    thrust.init(game_commands, messages)
+    warp.init(auxiliaries, game_commands, entities, hooks, universe)
 
 
 def start():

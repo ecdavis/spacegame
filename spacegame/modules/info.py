@@ -1,22 +1,13 @@
 from pantsmud.driver import parser
+from pantsmud.util import message
 
 
 class Service(object):
-    def __init__(self, messages):
-        self.messages = messages
-
     def position(self, mobile):
-        data = {
-            "position": mobile.position
-        }
-        self.messages.command_success(mobile, "position", data)
+        return mobile.position
 
     def location(self, mobile):
-        data = {
-            "celestial": mobile.celestial.name,
-            "star_system": mobile.star_system.name
-        }
-        self.messages.command_success(mobile, "location", data)
+        return mobile.celestial.name, mobile.star_system.name
 
 
 class Endpoint(object):
@@ -24,14 +15,21 @@ class Endpoint(object):
         self.service = service
 
     def position(self, request):
-        self.service.position(
+        result = self.service.position(
             request["mobile"]
         )
+        return {
+            "position": result
+        }
 
     def location(self, request):
-        self.service.location(
+        celestial_name, star_system_name = self.service.location(
             request["mobile"]
         )
+        return {
+            "celestial": celestial_name,
+            "star_system": star_system_name
+        }
 
 
 def make_position_command(endpoint):
@@ -40,7 +38,8 @@ def make_position_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        endpoint.position(request)
+        response = endpoint.position(request)
+        message.command_success(brain, cmd, response)
     return position_command
 
 
@@ -50,12 +49,13 @@ def make_location_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        endpoint.location(request)
+        response = endpoint.location(request)
+        message.command_success(brain, cmd, response)
     return location_command
 
 
-def init(commands, messages):
-    service = Service(messages)
+def init(commands):
+    service = Service()
     endpoint = Endpoint(service)
     commands.add_command("position", make_position_command(endpoint))
     commands.add_command("location", make_location_command(endpoint))

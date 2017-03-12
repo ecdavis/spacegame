@@ -1,20 +1,16 @@
 import pantsmud.game
 from pantsmud.driver import parser
-from pantsmud.util import error
+from pantsmud.util import error, message
 
 
 POSITION_UPDATE_TICK = 0.1
 
 
 class Service(object):
-    def __init__(self, messages):
-        self.messages = messages
-
     def thrust_speed(self, mobile, speed):
         if speed < 0 or speed > 10:
             raise error.CommandFail()  # TODO Add error message.
         mobile.speed = speed
-        self.messages.command_success(mobile, "thrust.speed")
 
     def thrust_vector(self, mobile, x, y, z):
         vector = (x, y, z)
@@ -23,7 +19,6 @@ class Service(object):
         if abs(1.0 - sum((abs(x), abs(y), abs(z)))) > 0.001:
             raise error.CommandFail()  # TODO Add error message.
         mobile.vector = vector
-        self.messages.command_success(mobile, "thrust.vector")
 
 
 class Endpoint(object):
@@ -53,6 +48,7 @@ def make_thrust_speed_command(endpoint):
             "speed": params["speed"]
         }
         endpoint.thrust_speed(request)
+        message.command_success(brain, cmd, None)
     return thrust_speed_command
 
 
@@ -66,6 +62,7 @@ def make_thrust_vector_command(endpoint):
             "z": params["z"]
         }
         endpoint.thrust_vector(request)
+        message.command_success(brain, cmd, None)
     return thrust_vector_command
 
 
@@ -80,8 +77,8 @@ def position_update_cycle():
         position_update(mobile, POSITION_UPDATE_TICK)
 
 
-def init(commands, messages):
-    service = Service(messages)
+def init(commands):
+    service = Service()
     endpoint = Endpoint(service)
     commands.add_command("thrust.speed", make_thrust_speed_command(endpoint))
     commands.add_command("thrust.vector", make_thrust_vector_command(endpoint))

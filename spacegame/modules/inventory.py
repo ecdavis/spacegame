@@ -1,6 +1,6 @@
 import pantsmud
 from pantsmud.driver import parser
-from pantsmud.util import error
+from pantsmud.util import error, message
 from spacegame.core import aux_types, hook_types
 from spacegame.universe import item
 
@@ -32,8 +32,7 @@ class InventoryAux(object):
 
 
 class Service(object):
-    def __init__(self, messages, universe):
-        self.messages = messages
+    def __init__(self, universe):
         self.universe = universe
 
     def inventory(self, mobile):
@@ -42,7 +41,7 @@ class Service(object):
             fitted_data = {fitted_data.name: str(fitted_data.uuid)}
         inventory = mobile.aux["inventory"].inventory
         inventory_data = {i.name: str(i.uuid) for i in inventory}
-        self.messages.command_success(mobile, "inventory", {"fitted": fitted_data, "inventory": inventory_data})
+        return fitted_data, inventory_data
 
     def fit(self, mobile, item_uuid):
         if mobile.aux["inventory"].fitted:
@@ -57,7 +56,6 @@ class Service(object):
         inventory = [i for i in inventory if i.uuid != item_uuid]
         mobile.aux["inventory"].fitted = fittable_item
         mobile.aux["inventory"].inventory = inventory
-        self.messages.command_success(mobile, "fit")
 
     def unfit(self, mobile):
         if mobile.aux["inventory"].fitted is None:
@@ -67,14 +65,13 @@ class Service(object):
         inventory.append(fitted_item)
         mobile.aux["inventory"].fitted = None
         mobile.aux["inventory"].inventory = inventory
-        self.messages.command_success(mobile, "unfit")
 
     def test_add_active_warp_scanner(self, mobile):
         i = item.Item()
         i.name = "Active Warp Scanner"
         mobile.aux["inventory"].inventory.append(i)
         self.universe.add_item(i)
-        self.messages.command_success(mobile, "test.add_active_warp_scanner", {"item": str(i.uuid)})
+        return i.uuid
 
 
 class Endpoint(object):
@@ -82,9 +79,13 @@ class Endpoint(object):
         self.service = service
 
     def inventory(self, request):
-        self.service.inventory(
+        fitted_data, inventory_data = self.service.inventory(
             request["mobile"]
         )
+        return {
+            "fitted": fitted_data,
+            "inventory": inventory_data
+        }
 
     def fit(self, request):
         self.service.fit(
@@ -98,9 +99,12 @@ class Endpoint(object):
         )
 
     def test_add_active_warp_scanner(self, request):
-        self.service.test_add_active_warp_scanner(
+        item_uuid = self.service.test_add_active_warp_scanner(
             request["mobile"]
         )
+        return {
+            "item": str(item_uuid)
+        }
 
 
 def make_inventory_command(endpoint):
@@ -109,7 +113,8 @@ def make_inventory_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        endpoint.inventory(request)
+        response = endpoint.inventory(request)
+        message.command_success(brain, cmd, response)
     return inventory_command
 
 
@@ -121,6 +126,7 @@ def make_fit_command(endpoint):
             "item_uuid": params["item_uuid"]
         }
         endpoint.fit(request)
+        message.command_success(brain, cmd, None)
     return fit_command
 
 
@@ -131,6 +137,7 @@ def make_unfit_command(endpoint):
             "mobile": brain.mobile
         }
         endpoint.unfit(request)
+        message.command_success(brain, cmd, None)
     return unfit_command
 
 
@@ -140,7 +147,8 @@ def make_test_add_active_warp_scanner_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        endpoint.test_add_active_warp_scanner(request)
+        response = endpoint.test_add_active_warp_scanner(request)
+        message.command_success(brain, cmd, response)
     return test_add_active_warp_scanner_command
 
 
@@ -151,10 +159,10 @@ def clear_inventory_hook(_, mobile):
         pantsmud.game.environment.remove_item(i)
 
 
-def init(auxiliaries, commands, hooks, messages, universe):
+def init(auxiliaries, commands, hooks, universe):
     auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
     hooks.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)
-    service = Service(messages, universe)
+    service = Service(universe)
     endpoint = Endpoint(service)
     commands.add_command("inventory", make_inventory_command(endpoint))
     commands.add_command("fit", make_fit_command(endpoint))

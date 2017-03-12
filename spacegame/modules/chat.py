@@ -1,5 +1,5 @@
 from pantsmud.driver import parser
-from pantsmud.util import error
+from pantsmud.util import error, message
 
 
 class Service(object):
@@ -13,7 +13,7 @@ class Service(object):
             if m is mobile:
                 continue
             self.messages.notify(m, "chat.global", data)
-        self.messages.command_success(mobile, "chat.global", data)
+        return data
 
     def chat_private(self, mobile, target_name, message):
         target = self.universe.get_entity(target_name)
@@ -27,7 +27,7 @@ class Service(object):
             "message": message
         }
         self.messages.notify(target, "chat.private", data)
-        self.messages.command_success(mobile, "chat.private", data)
+        return data
 
 
 class Endpoint(object):
@@ -35,17 +35,19 @@ class Endpoint(object):
         self.service = service
 
     def chat_global(self, request):
-        self.service.chat_global(
+        result = self.service.chat_global(
             request["mobile"],
             request["message"]
         )
+        return result
 
     def chat_private(self, request):
-        self.service.chat_private(
+        result = self.service.chat_private(
             request["mobile"],
             request["target_name"],
             request["message"]
         )
+        return result
 
 
 def make_chat_global_command(endpoint):
@@ -55,7 +57,8 @@ def make_chat_global_command(endpoint):
             "mobile": brain.mobile,
             "message": params["message"]
         }
-        endpoint.chat_global(request)
+        response = endpoint.chat_global(request)
+        message.command_success(brain, cmd, response)
     return chat_global_command
 
 
@@ -67,7 +70,8 @@ def make_chat_private_command(endpoint):
             "target_name": params["mobile_name"],
             "message": params["message"]
         }
-        endpoint.chat_private(request)
+        response = endpoint.chat_private(request)
+        message.command_success(brain, cmd, response)
     return chat_private_command
 
 

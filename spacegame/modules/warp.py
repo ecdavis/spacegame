@@ -35,19 +35,14 @@ class Service(object):
         beacon.celestial = mobile.celestial
         beacon.position = mobile.position
         self.universe.add_entity(beacon)
-        return {
-            "beacon_uuid": str(beacon.uuid)
-        }
+        return beacon.uuid
 
     def warp_scan(self, mobile):
         beacons = mobile.star_system.get_entities(is_warp_beacon=True)
         beacon_data = {b.name: str(b.uuid) for b in beacons if b.celestial is not mobile.celestial}
         celestials = mobile.star_system.get_celestials(uuids=mobile.aux["warp"].scanner)
         celestial_data = {c.name: str(c.uuid) for c in celestials if c is not mobile.celestial}
-        return {
-            "beacons": beacon_data,
-            "celestials": celestial_data
-        }
+        return beacon_data, celestial_data
 
     def warp_scan_activate(self, mobile):
         celestials = mobile.star_system.get_celestials()
@@ -55,9 +50,7 @@ class Service(object):
         mobile.aux["warp"].scanner = celestial_data.values()[:]
         for k, v in celestial_data.items():  # TODO ugh
             celestial_data[k] = str(v)
-        return {
-            "celestials": celestial_data
-        }
+        return celestial_data
 
     def _find_warp_destination(self, mobile, destination_uuid):
         beacons = mobile.star_system.get_entities(is_warp_beacon=True)
@@ -76,25 +69,35 @@ class Endpoint(object):
         self.service = service
 
     def warp(self, request):
-        return self.service.warp(
+        self.service.warp(
             request["mobile"],
             request["destination_uuid"]
         )
 
     def warp_beacon(self, request):
-        return self.service.warp_beacon(
+        beacon_uuid = self.service.warp_beacon(
             request["mobile"]
         )
+        return {
+            "beacon_uuid": str(beacon_uuid)
+        }
 
     def warp_scan(self, request):
-        return self.service.warp_scan(
+        beacon_data, celestial_data = self.service.warp_scan(
             request["mobile"]
         )
+        return {
+            "beacons": beacon_data,
+            "celestials": celestial_data
+        }
 
     def warp_scan_activate(self, request):
-        return self.service.warp_scan_activate(
+        celestial_data = self.service.warp_scan_activate(
             request["mobile"]
         )
+        return {
+            "celestials": celestial_data
+        }
 
 
 def make_warp_command(endpoint):

@@ -1,18 +1,17 @@
 import logging
 import random
 from pantsmud.driver import parser
-from pantsmud.util import error
+from pantsmud.util import error, message
 
 
 class Service(object):
-    def __init__(self, entities, game_commands, messages, universe, users):
+    def __init__(self, entities, game_commands, universe, users):
         self.entities = entities
         self.game_commands = game_commands
-        self.messages = messages
         self.universe = universe
         self.users = users
 
-    def register(self, brain, name):
+    def register(self, name):
         if self.users.player_name_exists(name):
             raise error.CommandFail()  # TODO Add error message.
         u = self.users.User()
@@ -24,7 +23,7 @@ class Service(object):
         u.player_uuid = p.uuid
         self.users.save_user(u)
         self.users.save_player(p)
-        self.messages.command_success(brain, "register", {"name": p.name, "uuid": str(u.uuid)})
+        return p.name, u.uuid
 
     def login(self, brain, user_uuid):
         if not self.users.user_exists(user_uuid):
@@ -39,8 +38,8 @@ class Service(object):
         p = self.users.load_player(u.player_uuid)
         p.attach_brain(brain)
         self.universe.add_entity(p)
-        self.messages.command_success(brain, "login", {"name": p.name})
         brain.replace_input_handler(self.game_commands.command_input_handler, "game")
+        return p.name
 
     def quit(self, brain):
         brain.close()
@@ -51,16 +50,22 @@ class Endpoint(object):
         self.service = service
 
     def register(self, request):
-        self.service.register(
-            request["brain"],
+        player_name, user_uuid = self.service.register(
             request["name"]
         )
+        return {
+            "name": player_name,
+            "uuid": str(user_uuid)
+        }
 
     def login(self, request):
-        self.service.login(
+        player_name = self.service.login(
             request["brain"],
             request["user_uuid"]
         )
+        return {
+            "name": player_name
+        }
 
     def quit(self, request):
         self.service.quit(
@@ -72,10 +77,10 @@ def make_register_command(endpoint):
     def register_command(brain, cmd, args):
         params = parser.parse([("name", parser.WORD)], args)
         request = {
-            "brain": brain,
             "name": params["name"]
         }
-        endpoint.register(request)
+        response = endpoint.register(request)
+        message.command_success(brain, cmd, response)
     return register_command
 
 
@@ -86,7 +91,8 @@ def make_login_command(endpoint):
             "brain": brain,
             "user_uuid": params["uuid"]
         }
-        endpoint.login(request)
+        response = endpoint.login(request)
+        message.command_success(brain, cmd, response)
     return login_command
 
 
@@ -100,11 +106,10 @@ def make_quit_command(endpoint):
     return quit_command
 
 
-def init(entities, game_commands, login_commands, messages, universe, users):
+def init(entities, game_commands, login_commands, universe, users):
     service = Service(
         entities,
         game_commands,
-        messages,
         universe,
         users
     )

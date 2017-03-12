@@ -32,8 +32,7 @@ class InventoryAux(object):
 
 
 class Service(object):
-    def __init__(self, messages, universe):
-        self.messages = messages
+    def __init__(self, universe):
         self.universe = universe
 
     def inventory(self, mobile):
@@ -160,10 +159,10 @@ def clear_inventory_hook(_, mobile):
         pantsmud.game.environment.remove_item(i)
 
 
-def init(auxiliaries, commands, hooks, messages, universe):
+def init(auxiliaries, commands, hooks, universe):
     auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
     hooks.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)
-    service = Service(messages, universe)
+    service = Service(universe)
     endpoint = Endpoint(service)
     commands.add_command("inventory", make_inventory_command(endpoint))
     commands.add_command("fit", make_fit_command(endpoint))

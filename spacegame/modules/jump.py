@@ -5,9 +5,8 @@ from spacegame.core import hook_types
 
 
 class Service(object):
-    def __init__(self, hooks, messages, universe):
+    def __init__(self, hooks, universe):
         self.hooks = hooks
-        self.messages = messages
         self.universe = universe
 
     def jump(self, mobile, system_name):
@@ -43,7 +42,7 @@ def make_jump_command(endpoint):
     return jump_command
 
 
-def init(commands, hooks, messages, universe):
-    service = Service(hooks, messages, universe)
+def init(commands, hooks, universe):
+    service = Service(hooks, universe)
     endpoint = Endpoint(service)
     commands.add_command("jump", make_jump_command(endpoint))

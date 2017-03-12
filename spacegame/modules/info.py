@@ -3,9 +3,6 @@ from pantsmud.util import message
 
 
 class Service(object):
-    def __init__(self, messages):
-        self.messages = messages
-
     def position(self, mobile):
         return mobile.position
 
@@ -57,8 +54,8 @@ def make_location_command(endpoint):
     return location_command
 
 
-def init(commands, messages):
-    service = Service(messages)
+def init(commands):
+    service = Service()
     endpoint = Endpoint(service)
     commands.add_command("position", make_position_command(endpoint))
     commands.add_command("location", make_location_command(endpoint))

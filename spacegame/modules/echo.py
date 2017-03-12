@@ -3,9 +3,8 @@ from pantsmud.util import message
 
 
 class Service(object):
-    def __init__(self, hooks, messages, universe, users):
+    def __init__(self, hooks, universe, users):
         self.hooks = hooks
-        self.messages = messages
         self.universe = universe
         self.users = users
 
@@ -78,8 +77,8 @@ def make_shutdown_command(endpoint):
     return shutdown_command
 
 
-def init(commands, hooks, messages, universe, users):
-    service = Service(hooks, messages, universe, users)
+def init(commands, hooks, universe, users):
+    service = Service(hooks, universe, users)
     endpoint = Endpoint(service)
     commands.add_command("echo", make_echo_command(endpoint))
     commands.add_command("quit", make_quit_command(endpoint))

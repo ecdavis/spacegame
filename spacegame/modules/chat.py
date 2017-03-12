@@ -1,5 +1,5 @@
 from pantsmud.driver import parser
-from pantsmud.util import error, message
+from pantsmud.util import error
 
 
 class Service(object):
@@ -71,8 +71,8 @@ def make_chat_private_command(endpoint):
     return chat_private_command
 
 
-def init(commands, universe):
-    service = Service(universe, message)
+def init(commands, messages, universe):
+    service = Service(universe, messages)
     endpoint = Endpoint(service)
     commands.add_command("chat.global", make_chat_global_command(endpoint))
     commands.add_command("chat.private", make_chat_private_command(endpoint))

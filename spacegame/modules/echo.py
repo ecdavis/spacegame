@@ -1,6 +1,4 @@
-from pantsmud.driver import hook, parser
-from pantsmud.util import message
-from spacegame.core import user
+from pantsmud.driver import parser
 
 
 class Service(object):
@@ -73,8 +71,8 @@ def make_shutdown_command(endpoint):
     return shutdown_command
 
 
-def init(commands, universe):
-    service = Service(hook, message, universe, user)
+def init(commands, hooks, messages, universe, users):
+    service = Service(hooks, messages, universe, users)
     endpoint = Endpoint(service)
     commands.add_command("echo", make_echo_command(endpoint))
     commands.add_command("quit", make_quit_command(endpoint))

@@ -1,6 +1,6 @@
 import pantsmud
 from pantsmud.driver import parser
-from pantsmud.util import error, message
+from pantsmud.util import error
 from spacegame.core import aux_types, hook_types
 from spacegame.universe import item
 
@@ -151,10 +151,10 @@ def clear_inventory_hook(_, mobile):
         pantsmud.game.environment.remove_item(i)
 
 
-def init(auxiliaries, commands, hooks, universe):
+def init(auxiliaries, commands, hooks, messages, universe):
     auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "inventory", InventoryAux)
     hooks.add(hook_types.REMOVE_MOBILE, clear_inventory_hook)
-    service = Service(message, universe)
+    service = Service(messages, universe)
     endpoint = Endpoint(service)
     commands.add_command("inventory", make_inventory_command(endpoint))
     commands.add_command("fit", make_fit_command(endpoint))

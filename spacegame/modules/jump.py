@@ -1,7 +1,6 @@
 import random
-import pantsmud.game
-from pantsmud.driver import hook, parser
-from pantsmud.util import error, message
+from pantsmud.driver import parser
+from pantsmud.util import error
 from spacegame.core import hook_types
 
 
@@ -44,7 +43,7 @@ def make_jump_command(endpoint):
     return jump_command
 
 
-def init(commands, universe):
-    service = Service(hook, message, universe)
+def init(commands, hooks, messages, universe):
+    service = Service(hooks, messages, universe)
     endpoint = Endpoint(service)
     commands.add_command("jump", make_jump_command(endpoint))

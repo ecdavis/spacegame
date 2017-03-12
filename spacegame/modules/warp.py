@@ -1,9 +1,7 @@
 import random
-import pantsmud.game
 from pantsmud.driver import parser
 from pantsmud.util import error, message
 from spacegame.core import aux_types, hook_types
-from spacegame.universe import entity
 
 
 class WarpAux(object):
@@ -157,11 +155,11 @@ def clear_warp_scanner(_, mobile):
     mobile.aux["warp"].scanner = []
 
 
-def init(auxiliaries, commands, hooks, universe):
+def init(auxiliaries, commands, entities, hooks, universe):
     auxiliaries.install(aux_types.AUX_TYPE_ENTITY, "warp", WarpAux)
     hooks.add(hook_types.CELESTIAL_EXIT, clear_warp_scanner)
     hooks.add(hook_types.STAR_SYSTEM_EXIT, clear_warp_scanner)
-    service = Service(entity, hooks, universe)
+    service = Service(entities, hooks, universe)
     endpoint = Endpoint(service)
     commands.add_command("warp", make_warp_command(endpoint))
     commands.add_command("warp.beacon", make_warp_beacon_command(endpoint))

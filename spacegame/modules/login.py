@@ -1,10 +1,7 @@
 import logging
 import random
-import pantsmud.game
-from pantsmud.driver import command, parser
-from pantsmud.util import error, message
-from spacegame.core import user
-from spacegame.universe import entity
+from pantsmud.driver import parser
+from pantsmud.util import error
 
 
 class Service(object):
@@ -103,13 +100,13 @@ def make_quit_command(endpoint):
     return quit_command
 
 
-def init(game_commands, login_commands, universe):
+def init(entities, game_commands, login_commands, messages, universe, users):
     service = Service(
-        entity,
+        entities,
         game_commands,
-        message,
+        messages,
         universe,
-        user
+        users
     )
     endpoint = Endpoint(service)
     login_commands.add_command("register", make_register_command(endpoint))

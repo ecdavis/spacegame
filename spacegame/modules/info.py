@@ -1,5 +1,4 @@
 from pantsmud.driver import parser
-from pantsmud.util import message
 
 
 class Service(object):
@@ -55,8 +54,8 @@ def make_location_command(endpoint):
     return location_command
 
 
-def init(commands):
-    service = Service(message)
+def init(commands, messages):
+    service = Service(messages)
     endpoint = Endpoint(service)
     commands.add_command("position", make_position_command(endpoint))
     commands.add_command("location", make_location_command(endpoint))

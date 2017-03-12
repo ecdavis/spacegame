@@ -1,6 +1,6 @@
 import pantsmud.game
 from pantsmud.driver import parser
-from pantsmud.util import error, message
+from pantsmud.util import error
 
 
 POSITION_UPDATE_TICK = 0.1
@@ -80,8 +80,8 @@ def position_update_cycle():
         position_update(mobile, POSITION_UPDATE_TICK)
 
 
-def init(commands):
-    service = Service(message)
+def init(commands, messages):
+    service = Service(messages)
     endpoint = Endpoint(service)
     commands.add_command("thrust.speed", make_thrust_speed_command(endpoint))
     commands.add_command("thrust.vector", make_thrust_vector_command(endpoint))

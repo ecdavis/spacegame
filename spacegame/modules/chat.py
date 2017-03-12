@@ -24,12 +24,9 @@ class Service(object):
         return mobile.name, target.name, message
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def chat_global(self, request):
-        mobile_name, message = self.service.chat_global(
+def make_chat_global_endpoint(service):
+    def chat_global_endpoint(request):
+        mobile_name, message = service.chat_global(
             request["mobile"],
             request["message"]
         )
@@ -37,9 +34,12 @@ class Endpoint(object):
             "mobile_from": mobile_name,
             "message": message
         }
+    return chat_global_endpoint
 
-    def chat_private(self, request):
-        from_name, to_name, message = self.service.chat_private(
+
+def make_chat_private_endpoint(service):
+    def chat_private_endpoint(request):
+        from_name, to_name, message = service.chat_private(
             request["mobile"],
             request["target_name"],
             request["message"]
@@ -49,6 +49,7 @@ class Endpoint(object):
             "mobile_to": to_name,
             "message": message
         }
+    return chat_private_endpoint
 
 
 def make_chat_global_command(endpoint):
@@ -58,7 +59,7 @@ def make_chat_global_command(endpoint):
             "mobile": brain.mobile,
             "message": params["message"]
         }
-        response = endpoint.chat_global(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return chat_global_command
 
@@ -71,13 +72,22 @@ def make_chat_private_command(endpoint):
             "target_name": params["mobile_name"],
             "message": params["message"]
         }
-        response = endpoint.chat_private(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return chat_private_command
 
 
 def init(commands, messages, universe):
     service = Service(universe, messages)
-    endpoint = Endpoint(service)
-    commands.add_command("chat.global", make_chat_global_command(endpoint))
-    commands.add_command("chat.private", make_chat_private_command(endpoint))
+    commands.add_command(
+        "chat.global",
+        make_chat_global_command(
+            make_chat_global_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "chat.private",
+        make_chat_private_command(
+            make_chat_private_endpoint(service)
+        )
+    )

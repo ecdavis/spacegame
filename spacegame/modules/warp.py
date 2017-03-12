@@ -64,40 +64,47 @@ class Service(object):
         return None, None
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def warp(self, request):
-        self.service.warp(
+def make_warp_endpoint(service):
+    def warp_endpoint(request):
+        service.warp(
             request["mobile"],
             request["destination_uuid"]
         )
+    return warp_endpoint
 
-    def warp_beacon(self, request):
-        beacon_uuid = self.service.warp_beacon(
+
+def make_warp_beacon_endpoint(service):
+    def warp_beacon_endpoint(request):
+        beacon_uuid = service.warp_beacon(
             request["mobile"]
         )
         return {
             "beacon_uuid": str(beacon_uuid)
         }
+    return warp_beacon_endpoint
 
-    def warp_scan(self, request):
-        beacon_data, celestial_data = self.service.warp_scan(
+
+def make_warp_scan_endpoint(service):
+    def warp_scan_endpoint(request):
+        beacon_data, celestial_data = service.warp_scan(
             request["mobile"]
         )
         return {
             "beacons": beacon_data,
             "celestials": celestial_data
         }
+    return warp_scan_endpoint
 
-    def warp_scan_activate(self, request):
-        celestial_data = self.service.warp_scan_activate(
+
+def make_warp_scan_activate_endpoint(service):
+    def warp_scan_activate_endpoint(request):
+        celestial_data = service.warp_scan_activate(
             request["mobile"]
         )
         return {
             "celestials": celestial_data
         }
+    return warp_scan_activate_endpoint
 
 
 def make_warp_command(endpoint):
@@ -107,7 +114,7 @@ def make_warp_command(endpoint):
             "mobile": brain.mobile,
             "destination_uuid": params["destination_uuid"]
         }
-        response = endpoint.warp(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return warp_command
 
@@ -118,7 +125,7 @@ def make_warp_beacon_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.warp_beacon(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return warp_beacon_command
 
@@ -129,7 +136,7 @@ def make_warp_scan_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.warp_scan(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return warp_scan_command
 
@@ -140,7 +147,7 @@ def make_warp_scan_activate_command(endpoint):
         request = {
             "mobile": brain.mobile
         }
-        response = endpoint.warp_scan_activate(request)
+        response = endpoint(request)
         message.command_success(brain, cmd, response)
     return warp_scan_activate_command
 
@@ -163,8 +170,27 @@ def init(auxiliaries, commands, entities, hooks, universe):
     hooks.add(hook_types.CELESTIAL_EXIT, clear_warp_scanner)
     hooks.add(hook_types.STAR_SYSTEM_EXIT, clear_warp_scanner)
     service = Service(entities, hooks, universe)
-    endpoint = Endpoint(service)
-    commands.add_command("warp", make_warp_command(endpoint))
-    commands.add_command("warp.beacon", make_warp_beacon_command(endpoint))
-    commands.add_command("warp.scan", make_warp_scan_command(endpoint))
-    commands.add_command("warp.scan.activate", make_warp_scan_activate_command(endpoint))
+    commands.add_command(
+        "warp",
+        make_warp_command(
+            make_warp_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "warp.beacon",
+        make_warp_beacon_command(
+            make_warp_beacon_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "warp.scan",
+        make_warp_scan_command(
+            make_warp_scan_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "warp.scan.activate",
+        make_warp_scan_activate_command(
+            make_warp_scan_activate_endpoint(service)
+        )
+    )

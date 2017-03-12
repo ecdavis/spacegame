@@ -21,23 +21,24 @@ class Service(object):
         mobile.vector = vector
 
 
-class Endpoint(object):
-    def __init__(self, service):
-        self.service = service
-
-    def thrust_speed(self, request):
-        self.service.thrust_speed(
+def make_thrust_speed_endpoint(service):
+    def thrust_speed_endpoint(request):
+        service.thrust_speed(
             request["mobile"],
             request["speed"]
         )
+    return thrust_speed_endpoint
 
-    def thrust_vector(self, request):
-        self.service.thrust_vector(
+
+def make_thrust_vector_endpoint(service):
+    def thrust_vector_endpoint(request):
+        service.thrust_vector(
             request["mobile"],
             request["x"],
             request["y"],
             request["z"]
         )
+    return thrust_vector_endpoint
 
 
 def make_thrust_speed_command(endpoint):
@@ -47,7 +48,7 @@ def make_thrust_speed_command(endpoint):
             "mobile": brain.mobile,
             "speed": params["speed"]
         }
-        endpoint.thrust_speed(request)
+        endpoint(request)
         message.command_success(brain, cmd, None)
     return thrust_speed_command
 
@@ -61,7 +62,7 @@ def make_thrust_vector_command(endpoint):
             "y": params["y"],
             "z": params["z"]
         }
-        endpoint.thrust_vector(request)
+        endpoint(request)
         message.command_success(brain, cmd, None)
     return thrust_vector_command
 
@@ -79,9 +80,18 @@ def position_update_cycle():
 
 def init(commands):
     service = Service()
-    endpoint = Endpoint(service)
-    commands.add_command("thrust.speed", make_thrust_speed_command(endpoint))
-    commands.add_command("thrust.vector", make_thrust_vector_command(endpoint))
+    commands.add_command(
+        "thrust.speed",
+        make_thrust_speed_command(
+            make_thrust_speed_endpoint(service)
+        )
+    )
+    commands.add_command(
+        "thrust.vector",
+        make_thrust_vector_command(
+            make_thrust_vector_endpoint(service)
+        )
+    )
 
 
 def start():

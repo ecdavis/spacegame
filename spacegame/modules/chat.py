@@ -8,12 +8,11 @@ class Service(object):
         self.messages = messages
 
     def chat_global(self, mobile, message):
-        data = {"mobile_from": mobile.name, "message": message}
         for m in self.universe.get_mobiles():
             if m is mobile:
                 continue
-            self.messages.notify(m, "chat.global", data)
-        return data
+            self.messages.chat_global(m, mobile.name, message)
+        return mobile.name, message
 
     def chat_private(self, mobile, target_name, message):
         target = self.universe.get_entity(target_name)
@@ -21,13 +20,8 @@ class Service(object):
             raise error.CommandFail()  # TODO Add error message
         if target is mobile:
             raise error.CommandFail()  # TODO Add error message
-        data = {
-            "mobile_from": mobile.name,
-            "mobile_to": target.name,
-            "message": message
-        }
-        self.messages.notify(target, "chat.private", data)
-        return data
+        self.messages.chat_private(target, mobile.name, message)
+        return mobile.name, target.name, message
 
 
 class Endpoint(object):
@@ -35,19 +29,26 @@ class Endpoint(object):
         self.service = service
 
     def chat_global(self, request):
-        result = self.service.chat_global(
+        mobile_name, message = self.service.chat_global(
             request["mobile"],
             request["message"]
         )
-        return result
+        return {
+            "mobile_from": mobile_name,
+            "message": message
+        }
 
     def chat_private(self, request):
-        result = self.service.chat_private(
+        from_name, to_name, message = self.service.chat_private(
             request["mobile"],
             request["target_name"],
             request["message"]
         )
-        return result
+        return {
+            "mobile_from": from_name,
+            "mobile_to": to_name,
+            "message": message
+        }
 
 
 def make_chat_global_command(endpoint):

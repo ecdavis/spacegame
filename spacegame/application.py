@@ -9,6 +9,7 @@ import spacegame
 import spacegame.core.user
 import spacegame.universe.entity
 from spacegame import config
+from spacegame.core import messages
 from spacegame.universe import celestial, persist, star_system, universe
 
 
@@ -96,7 +97,7 @@ def main(data_dir, addr):
         pantsmud.driver.command,
         pantsmud.driver.hook,
         spacegame.core.login_manager,
-        pantsmud.util.message,
+        messages.Messages(),
         universe,
         spacegame.core.user
     )

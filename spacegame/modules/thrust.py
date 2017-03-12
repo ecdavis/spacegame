@@ -1,34 +1,72 @@
 import pantsmud.game
 from pantsmud.driver import parser
-from pantsmud.util import error, message
+from pantsmud.util import error
 
 
 POSITION_UPDATE_TICK = 0.1
 
 
-def thrust_speed_command(brain, cmd, args):
-    params = parser.parse([("speed", parser.INT)], args)
-    mobile = brain.mobile
-    speed = params["speed"]
-    if speed < 0 or speed > 10:
-        raise error.CommandFail()  # TODO Add error message.
-    mobile.speed = speed
-    message.command_success(mobile, cmd)
+class Service(object):
+    def __init__(self, messages):
+        self.messages = messages
+
+    def thrust_speed(self, mobile, speed):
+        if speed < 0 or speed > 10:
+            raise error.CommandFail()  # TODO Add error message.
+        mobile.speed = speed
+        self.messages.command_success(mobile, "thrust.speed")
+
+    def thrust_vector(self, mobile, x, y, z):
+        vector = (x, y, z)
+        if x > 1.0 or y > 1.0 or z > 1.0:
+            raise error.CommandFail()  # TODO Add error message.
+        if abs(1.0 - sum((abs(x), abs(y), abs(z)))) > 0.001:
+            raise error.CommandFail()  # TODO Add error message.
+        mobile.vector = vector
+        self.messages.command_success(mobile, "thrust.vector")
 
 
-def thrust_vector_command(brain, cmd, args):
-    params = parser.parse([("x", parser.FLOAT), ("y", parser.FLOAT), ("z", parser.FLOAT)], args)
-    mobile = brain.mobile
-    x = round(params["x"], 3)
-    y = round(params["y"], 3)
-    z = round(params["z"], 3)
-    vector = (x, y, z)
-    if x > 1.0 or y > 1.0 or z > 1.0:
-        raise error.CommandFail()  # TODO Add error message.
-    if abs(1.0 - sum((abs(x), abs(y), abs(z)))) > 0.001:
-        raise error.CommandFail()  # TODO Add error message.
-    mobile.vector = vector
-    message.command_success(mobile, cmd)
+class Endpoint(object):
+    def __init__(self, service):
+        self.service = service
+
+    def thrust_speed(self, request):
+        self.service.thrust_speed(
+            request["mobile"],
+            request["speed"]
+        )
+
+    def thrust_vector(self, request):
+        self.service.thrust_vector(
+            request["mobile"],
+            request["x"],
+            request["y"],
+            request["z"]
+        )
+
+
+def make_thrust_speed_command(endpoint):
+    def thrust_speed_command(brain, cmd, args):
+        params = parser.parse([("speed", parser.INT)], args)
+        request = {
+            "mobile": brain.mobile,
+            "speed": params["speed"]
+        }
+        endpoint.thrust_speed(request)
+    return thrust_speed_command
+
+
+def make_thrust_vector_command(endpoint):
+    def thrust_vector_command(brain, cmd, args):
+        params = parser.parse([("x", parser.FLOAT), ("y", parser.FLOAT), ("z", parser.FLOAT)], args)
+        request = {
+            "mobile": brain.mobile,
+            "x": params["x"],
+            "y": params["y"],
+            "z": params["z"]
+        }
+        endpoint.thrust_vector(request)
+    return thrust_vector_command
 
 
 def position_update(mobile, seconds):
@@ -42,9 +80,11 @@ def position_update_cycle():
         position_update(mobile, POSITION_UPDATE_TICK)
 
 
-def init(commands):
-    commands.add_command("thrust.speed", thrust_speed_command)
-    commands.add_command("thrust.vector", thrust_vector_command)
+def init(commands, messages):
+    service = Service(messages)
+    endpoint = Endpoint(service)
+    commands.add_command("thrust.speed", make_thrust_speed_command(endpoint))
+    commands.add_command("thrust.vector", make_thrust_vector_command(endpoint))
 
 
 def start():

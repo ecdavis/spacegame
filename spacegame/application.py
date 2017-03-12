@@ -4,7 +4,10 @@ import pants
 import pantsmud.driver
 import pantsmud.game
 import pantsmud.net
+import pantsmud.util.message
 import spacegame
+import spacegame.core.user
+import spacegame.universe.entity
 from spacegame import config
 from spacegame.universe import celestial, persist, star_system, universe
 
@@ -89,9 +92,13 @@ def main(data_dir, addr):
     pantsmud.game.init(engine, universe)
     spacegame.init(
         pantsmud.driver.auxiliary,
+        spacegame.universe.entity,
         pantsmud.driver.command,
         pantsmud.driver.hook,
-        spacegame.core.login_manager
+        spacegame.core.login_manager,
+        pantsmud.util.message,
+        universe,
+        spacegame.core.user
     )
 
     # Create the server

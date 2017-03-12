@@ -1,5 +1,9 @@
 *.py[cod]
+*.egg-info
 
 .idea
 
 data
+
+.coverage
+htmlcov

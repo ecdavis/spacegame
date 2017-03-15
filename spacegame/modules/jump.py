@@ -5,8 +5,9 @@ from spacegame.core import hook_types
 
 
 class Service(object):
-    def __init__(self, hooks, universe):
+    def __init__(self, hooks, messages, universe):
         self.hooks = hooks
+        self.messages = messages
         self.universe = universe
 
     def jump(self, mobile, system_name):
@@ -16,7 +17,19 @@ class Service(object):
         elif mobile.star_system is star_system:
             raise error.CommandFail()  # TODO Add error message.
         self.hooks.run(hook_types.STAR_SYSTEM_EXIT, mobile)
+        for m in self.universe.get_mobiles():
+            if m is mobile:
+                continue
+            if m.celestial is not mobile.celestial:
+                continue
+            self.messages.jump_exit(m, mobile.name)
         mobile.celestial = random.choice(list(star_system.core_celestials))
+        for m in self.universe.get_mobiles():
+            if m is mobile:
+                continue
+            if m.celestial is not mobile.celestial:
+                continue
+            self.messages.jump_enter(m, mobile.name)
 
 
 def make_jump_endpoint(service):
@@ -40,8 +53,8 @@ def make_jump_command(endpoint):
     return jump_command
 
 
-def init(commands, hooks, universe):
-    service = Service(hooks, universe)
+def init(commands, hooks, messages, universe):
+    service = Service(hooks, messages, universe)
     commands.add_command(
         "jump",
         make_jump_command(

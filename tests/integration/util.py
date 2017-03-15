@@ -26,6 +26,8 @@ class StatefulIntegrationTestCase(unittest.TestCase):
         self._game_thread.start()
         time.sleep(1)  # TODO Figure out a way to remove this.
         self.clients = []
+        bg_client = self.get_client()
+        self.register_and_login(bg_client, "bg_client_%d" % random.randint(0, 1000000))
 
     def tearDown(self):
         for client in self.clients:
@@ -70,6 +72,8 @@ class IntegrationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.clients = []
+        bg_client = self.get_client()
+        self.register_and_login(bg_client, "bg_client_%d" % random.randint(0, 1000000))
 
     def tearDown(self):
         for client in self.clients:

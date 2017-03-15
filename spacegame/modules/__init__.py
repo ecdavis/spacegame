@@ -6,7 +6,7 @@ def init(auxiliaries, entities, game_commands, hooks, login_commands, messages, 
     echo.init(game_commands, hooks, universe, users)
     info.init(game_commands)
     inventory.init(auxiliaries, game_commands, hooks, universe)
-    jump.init(game_commands, hooks, universe)
+    jump.init(game_commands, hooks, messages, universe)
     login.init(entities, game_commands, login_commands, universe, users)
     thrust.init(game_commands)
     warp.init(auxiliaries, game_commands, entities, hooks, universe)

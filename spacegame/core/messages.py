@@ -22,3 +22,21 @@ class Messages(object):
                 "message": message
             }
         )
+
+    def jump_exit(self, actor, mobile_name):
+        notify(
+            actor,
+            "jump.exit",
+            {
+                "mobile": mobile_name
+            }
+        )
+
+    def jump_enter(self, actor, mobile_name):
+        notify(
+            actor,
+            "jump.enter",
+            {
+                "mobile": mobile_name
+            }
+        )
